@@ -1,0 +1,28 @@
+apiVersion: tekton.dev/v1beta1
+kind: PipelineRun
+metadata:
+  name: sonarqube-pipeline-run
+spec:
+  pipelineRef:
+    name: git-sonarqube-pipeline
+  params:
+  - name: git-url
+    value: https://github.com/ravindra-be2004/testrep.git
+  - name: git-revision
+    value: main
+  - name: SONAR_HOST_URL
+    #    value: http://127.0.0.1:9000
+    value: http://sonar1-demo1.apps.ocp4.example.com
+  - name: PROJECT_KEY
+    value: demo1
+  workspaces:
+  - name: shared-workspace
+    volumeClaimTemplate:
+      metadata:
+        name: sonarqube-pvc
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        resources:
+          requests:
+            storage: 1Gi
+

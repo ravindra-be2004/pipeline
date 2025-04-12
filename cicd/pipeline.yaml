@@ -1,0 +1,46 @@
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: git-sonarqube-pipeline
+spec:
+  params:
+  - name: git-url
+    type: string
+  - name: git-revision
+    type: string
+    default: main
+  - name: SONAR_HOST_URL
+    type: string
+  - name: PROJECT_KEY
+    type: string
+  workspaces:
+  - name: shared-workspace
+  tasks:
+  - name: clone-repo
+    taskRef:
+      name: git-clone
+      kind: ClusterTask
+    workspaces:
+    - name: output
+      workspace: shared-workspace
+    params:
+      - name: url
+        value: $(params.git-url)
+      - name: revision
+        value: $(params.git-revision)
+      - name: deleteExisting
+        value: "true" 
+  - name: sonar-analysis
+    taskRef:
+      name: sonarqube-scanner
+    runAfter:
+      - clone-repo
+    workspaces:
+    - name: source
+      workspace: shared-workspace
+    params:
+      - name: SONAR_HOST_URL
+        value: $(params.SONAR_HOST_URL)
+      - name: PROJECT_KEY
+        value: $(params.PROJECT_KEY)
+
