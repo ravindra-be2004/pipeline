@@ -1,0 +1,11 @@
+apiVersion: v1
+items:
+- apiVersion: operators.coreos.com/v1alpha1
+  kind: CatalogSource
+  metadata:
+    name: do288-catalog-cs
+    namespace: openshift-marketplace
+  spec:
+    displayName: do288 Operator Catalog Cs
+    image: registry.ocp4.example.com:8443/redhat/redhat-operator-index:v4.14
+    sourceType: grpc

@@ -1,0 +1,467 @@
+
+
+
+
+
+
+<!DOCTYPE html>
+<html class="gl-light ui-neutral with-top-bar with-header " lang="en">
+<head prefix="og: http://ogp.me/ns#">
+<meta charset="utf-8">
+<meta content="IE=edge" http-equiv="X-UA-Compatible">
+<meta content="width=device-width, initial-scale=1" name="viewport">
+<title>deploy/chart/values.yaml · master · GitLab.org / Cloud Native / GitLab Operator · GitLab</title>
+<script nonce="FSpUTtUVTUvikBH8MnZ9FA==">
+//<![CDATA[
+window.gon={};gon.math_rendering_limits_enabled=true;gon.features={"inlineBlame":false,"blobOverflowMenu":false,"filterBlobPath":false,"blobRepositoryVueHeaderApp":true,"directoryCodeDropdownUpdates":false};gon.licensed_features={"fileLocks":true,"remoteDevelopment":true};
+//]]>
+</script>
+
+
+<script nonce="FSpUTtUVTUvikBH8MnZ9FA==">
+//<![CDATA[
+var gl = window.gl || {};
+gl.startup_calls = null;
+gl.startup_graphql_calls = [{"query":"query getBlobInfo(\n  $projectPath: ID!\n  $filePath: [String!]!\n  $ref: String!\n  $refType: RefType\n  $shouldFetchRawText: Boolean!\n) {\n  project(fullPath: $projectPath) {\n    __typename\n    id\n    repository {\n      __typename\n      empty\n      blobs(paths: $filePath, ref: $ref, refType: $refType) {\n        __typename\n        nodes {\n          __typename\n          id\n          webPath\n          name\n          size\n          rawSize\n          rawTextBlob @include(if: $shouldFetchRawText)\n          fileType\n          language\n          path\n          blamePath\n          editBlobPath\n          gitpodBlobUrl\n          ideEditPath\n          forkAndEditPath\n          ideForkAndEditPath\n          codeNavigationPath\n          projectBlobPathRoot\n          forkAndViewPath\n          environmentFormattedExternalUrl\n          environmentExternalUrlForRouteMap\n          canModifyBlob\n          canModifyBlobWithWebIde\n          canCurrentUserPushToBranch\n          archived\n          storedExternally\n          externalStorage\n          externalStorageUrl\n          rawPath\n          replacePath\n          pipelineEditorPath\n          simpleViewer {\n            fileType\n            tooLarge\n            type\n            renderError\n          }\n          richViewer {\n            fileType\n            tooLarge\n            type\n            renderError\n          }\n        }\n      }\n    }\n  }\n}\n","variables":{"projectPath":"gitlab-org/cloud-native/gitlab-operator","ref":"master","refType":null,"filePath":"deploy/chart/values.yaml","shouldFetchRawText":true}}];
+
+if (gl.startup_calls && window.fetch) {
+  Object.keys(gl.startup_calls).forEach(apiCall => {
+   gl.startup_calls[apiCall] = {
+      fetchCall: fetch(apiCall, {
+        // Emulate XHR for Rails AJAX request checks
+        headers: {
+          'X-Requested-With': 'XMLHttpRequest'
+        },
+        // fetch won’t send cookies in older browsers, unless you set the credentials init option.
+        // We set to `same-origin` which is default value in modern browsers.
+        // See https://github.com/whatwg/fetch/pull/585 for more information.
+        credentials: 'same-origin'
+      })
+    };
+  });
+}
+if (gl.startup_graphql_calls && window.fetch) {
+  const headers = {"X-CSRF-Token":"hwqKoyJP9Fj4LKNxzzIWSHz8wocP5Yv41VhHO4KpjzRfGE4O31hhRUDkElqdyPcDqrYpam5IfEV2y5HSotb0aw","x-gitlab-feature-category":"source_code_management"};
+  const url = `https://gitlab.com/api/graphql`
+
+  const opts = {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      ...headers,
+    }
+  };
+
+  gl.startup_graphql_calls = gl.startup_graphql_calls.map(call => ({
+    ...call,
+    fetchCall: fetch(url, {
+      ...opts,
+      credentials: 'same-origin',
+      body: JSON.stringify(call)
+    })
+  }))
+}
+
+
+//]]>
+</script>
+
+<link rel="prefetch" href="/assets/webpack/monaco.5200b845.chunk.js">
+
+<link rel="stylesheet" href="/assets/application-66bf9396f3145d208c2e25101e02632a67c4e76b46c65f4c9a523ab6bb8a2122.css" />
+<link rel="stylesheet" href="/assets/page_bundles/tree-36265195585af5e9c554d953e140f9c837af2e2eecb061d3f93d2857768eb286.css" /><link rel="stylesheet" href="/assets/page_bundles/projects-80846bc4bdd46036586f0a20fdc1d14b080c3cabfcebf1f71b5e1cb019f70b56.css" /><link rel="stylesheet" href="/assets/page_bundles/commit_description-1e2cba4dda3c7b30dd84924809020c569f1308dea51520fe1dd5d4ce31403195.css" /><link rel="stylesheet" href="/assets/page_bundles/work_items-f8b0433a074a1464d564be96c61f98abba72c32c594f4624f237b4e41b1a5679.css" /><link rel="stylesheet" href="/assets/page_bundles/notes_shared-8b38073ba71abd72b511b161ac1c0567ac634b689428f7c74591325093229970.css" />
+<link rel="stylesheet" href="/assets/application_utilities-7844decc020ce5472253adae1ee2b329cdb6ddd08043b91daa3c9ed5530f5142.css" />
+<link rel="stylesheet" href="/assets/tailwind-05de071c5710e9444f9f5419b0cedfefae1c648e6de6f3365ec8b3d6adee2524.css" />
+
+
+<link rel="stylesheet" href="/assets/fonts-fae5d3f79948bd85f18b6513a025f863b19636e85b09a1492907eb4b1bb0557b.css" />
+<link rel="stylesheet" href="/assets/highlight/themes/white-99cce4f4b362f6840d7134d4129668929fde49c4da11d6ebf17f99768adbd868.css" />
+
+<script src="/assets/webpack/runtime.32c622f5.bundle.js" defer="defer" nonce="FSpUTtUVTUvikBH8MnZ9FA=="></script>
+<script src="/assets/webpack/main.f2441bc0.chunk.js" defer="defer" nonce="FSpUTtUVTUvikBH8MnZ9FA=="></script>
+<script src="/assets/webpack/tracker.e0872f74.chunk.js" defer="defer" nonce="FSpUTtUVTUvikBH8MnZ9FA=="></script>
+<script src="/assets/webpack/analytics.3d11ffb4.chunk.js" defer="defer" nonce="FSpUTtUVTUvikBH8MnZ9FA=="></script>
+<script nonce="FSpUTtUVTUvikBH8MnZ9FA==">
+//<![CDATA[
+window.snowplowOptions = {"namespace":"gl","hostname":"snowplowprd.trx.gitlab.net","cookieDomain":".gitlab.com","appId":"gitlab","formTracking":true,"linkClickTracking":true}
+
+gl = window.gl || {};
+gl.snowplowStandardContext = {"schema":"iglu:com.gitlab/gitlab_standard/jsonschema/1-1-1","data":{"environment":"production","source":"gitlab-rails","correlation_id":"01JPMRDBYMJ9CCR89P1T0SARSH","plan":"gold","extra":{},"user_id":null,"global_user_id":null,"is_gitlab_team_member":null,"namespace_id":12316469,"project_id":18899486,"feature_enabled_by_namespace_ids":null,"realm":"saas","instance_id":"ea8bf810-1d6f-4a6a-b4fd-93e8cbd8b57f","host_name":"gitlab-cny-webservice-web-569d49b799-lccwl","instance_version":"17.10.0","context_generated_at":"2025-03-18T13:52:11.589Z"}}
+gl.snowplowPseudonymizedPageUrl = "https://gitlab.com/namespace12316469/project18899486/-/blob/:repository_path";
+gl.maskedDefaultReferrerUrl = null;
+gl.ga4MeasurementId = 'G-ENFH3X7M5Y';
+
+
+//]]>
+</script>
+<link rel="preload" href="/assets/application_utilities-7844decc020ce5472253adae1ee2b329cdb6ddd08043b91daa3c9ed5530f5142.css" as="style" type="text/css" nonce="BMd3wBmOA+1kZLl1RPUWeg==">
+<link rel="preload" href="/assets/application-66bf9396f3145d208c2e25101e02632a67c4e76b46c65f4c9a523ab6bb8a2122.css" as="style" type="text/css" nonce="BMd3wBmOA+1kZLl1RPUWeg==">
+<link rel="preload" href="/assets/highlight/themes/white-99cce4f4b362f6840d7134d4129668929fde49c4da11d6ebf17f99768adbd868.css" as="style" type="text/css" nonce="BMd3wBmOA+1kZLl1RPUWeg==">
+<link crossorigin="" href="https://snowplowprd.trx.gitlab.net" rel="preconnect">
+<link as="font" crossorigin="" href="/assets/gitlab-sans/GitLabSans-1e0a5107ea3bbd4be93e8ad2c503467e43166cd37e4293570b490e0812ede98b.woff2" rel="preload">
+<link as="font" crossorigin="" href="/assets/gitlab-sans/GitLabSans-Italic-38eaf1a569a54ab28c58b92a4a8de3afb96b6ebc250cf372003a7b38151848cc.woff2" rel="preload">
+<link as="font" crossorigin="" href="/assets/gitlab-mono/GitLabMono-08d2c5e8ff8fd3d2d6ec55bc7713380f8981c35f9d2df14e12b835464d6e8f23.woff2" rel="preload">
+<link as="font" crossorigin="" href="/assets/gitlab-mono/GitLabMono-Italic-38e58d8df29485a20c550da1d0111e2c2169f6dcbcf894f2cd3afbdd97bcc588.woff2" rel="preload">
+<link rel="preload" href="/assets/fonts-fae5d3f79948bd85f18b6513a025f863b19636e85b09a1492907eb4b1bb0557b.css" as="style" type="text/css" nonce="BMd3wBmOA+1kZLl1RPUWeg==">
+
+
+
+<script src="/assets/webpack/sentry.75236722.chunk.js" defer="defer" nonce="FSpUTtUVTUvikBH8MnZ9FA=="></script>
+
+<script src="/assets/webpack/commons-pages.groups.analytics.dashboards-pages.groups.harbor.repositories-pages.groups.iteration_ca-f757bfc9.f1145b14.chunk.js" defer="defer" nonce="FSpUTtUVTUvikBH8MnZ9FA=="></script>
+<script src="/assets/webpack/commons-pages.groups.new-pages.import.gitlab_projects.new-pages.import.manifest.new-pages.projects.n-44c6c18e.d69cc974.chunk.js" defer="defer" nonce="FSpUTtUVTUvikBH8MnZ9FA=="></script>
+<script src="/assets/webpack/commons-pages.search.show-super_sidebar.c2d9c3cd.chunk.js" defer="defer" nonce="FSpUTtUVTUvikBH8MnZ9FA=="></script>
+<script src="/assets/webpack/super_sidebar.0d4d70c9.chunk.js" defer="defer" nonce="FSpUTtUVTUvikBH8MnZ9FA=="></script>
+<script src="/assets/webpack/commons-pages.projects-pages.projects.activity-pages.projects.alert_management.details-pages.project-68d77824.c8626966.chunk.js" defer="defer" nonce="FSpUTtUVTUvikBH8MnZ9FA=="></script>
+<script src="/assets/webpack/commons-pages.groups.packages-pages.groups.registry.repositories-pages.groups.security.policies.edit-429ebfda.daa705c1.chunk.js" defer="defer" nonce="FSpUTtUVTUvikBH8MnZ9FA=="></script>
+<script src="/assets/webpack/16.18f3aa66.chunk.js" defer="defer" nonce="FSpUTtUVTUvikBH8MnZ9FA=="></script>
+<script src="/assets/webpack/90.d0b5a194.chunk.js" defer="defer" nonce="FSpUTtUVTUvikBH8MnZ9FA=="></script>
+<script src="/assets/webpack/105.814705a3.chunk.js" defer="defer" nonce="FSpUTtUVTUvikBH8MnZ9FA=="></script>
+<script src="/assets/webpack/130.ccd5e6b8.chunk.js" defer="defer" nonce="FSpUTtUVTUvikBH8MnZ9FA=="></script>
+<script src="/assets/webpack/commons-pages.projects.blob.show-pages.projects.show-pages.projects.snippets.show-pages.projects.tre-c684fcf6.2c8b4115.chunk.js" defer="defer" nonce="FSpUTtUVTUvikBH8MnZ9FA=="></script>
+<script src="/assets/webpack/commons-pages.projects.blob.edit-pages.projects.blob.new-pages.projects.blob.show-pages.projects.sho-ec79e51c.da06f602.chunk.js" defer="defer" nonce="FSpUTtUVTUvikBH8MnZ9FA=="></script>
+<script src="/assets/webpack/commons-pages.groups.show-pages.projects.blob.show-pages.projects.show-pages.projects.tree.show.8ee71ea6.chunk.js" defer="defer" nonce="FSpUTtUVTUvikBH8MnZ9FA=="></script>
+<script src="/assets/webpack/commons-pages.projects.blob.show-pages.projects.security.vulnerabilities.show-pages.projects.show-pa-5ff3b950.f0404dc1.chunk.js" defer="defer" nonce="FSpUTtUVTUvikBH8MnZ9FA=="></script>
+<script src="/assets/webpack/commons-pages.projects.blob.show-pages.projects.show-pages.projects.tree.show.fe969282.chunk.js" defer="defer" nonce="FSpUTtUVTUvikBH8MnZ9FA=="></script>
+<script src="/assets/webpack/commons-pages.projects.blob.show-pages.projects.tree.show-treeList.14ec2ceb.chunk.js" defer="defer" nonce="FSpUTtUVTUvikBH8MnZ9FA=="></script>
+<script src="/assets/webpack/pages.projects.blob.show.49f33d5c.chunk.js" defer="defer" nonce="FSpUTtUVTUvikBH8MnZ9FA=="></script>
+
+<meta content="object" property="og:type">
+<meta content="GitLab" property="og:site_name">
+<meta content="deploy/chart/values.yaml · master · GitLab.org / Cloud Native / GitLab Operator · GitLab" property="og:title">
+<meta content="Kubernetes Operator for GitLab server" property="og:description">
+<meta content="https://gitlab.com/uploads/-/system/project/avatar/18899486/gitlab-operator-project.png" property="og:image">
+<meta content="64" property="og:image:width">
+<meta content="64" property="og:image:height">
+<meta content="https://gitlab.com/gitlab-org/cloud-native/gitlab-operator/-/blob/master/deploy/chart/values.yaml" property="og:url">
+<meta content="summary" property="twitter:card">
+<meta content="deploy/chart/values.yaml · master · GitLab.org / Cloud Native / GitLab Operator · GitLab" property="twitter:title">
+<meta content="Kubernetes Operator for GitLab server" property="twitter:description">
+<meta content="https://gitlab.com/uploads/-/system/project/avatar/18899486/gitlab-operator-project.png" property="twitter:image">
+
+<meta name="csrf-param" content="authenticity_token" />
+<meta name="csrf-token" content="2IXwZ73fBrfm6A1RoQetAiVV3Wfu0tDTUZhzinbG_h8AlzTKQMiTql4gvHrz_UxJ8x82io9_J27yC6VjVrmFQA" />
+<meta name="csp-nonce" content="FSpUTtUVTUvikBH8MnZ9FA==" />
+<meta name="action-cable-url" content="/-/cable" />
+<link href="/-/manifest.json" rel="manifest">
+<link rel="icon" type="image/png" href="/assets/favicon-yellow-018213ceb87b472388095d0264be5b4319ef47471dacea03c83ecc233ced2fd5.png" id="favicon" data-original-href="/assets/favicon-yellow-018213ceb87b472388095d0264be5b4319ef47471dacea03c83ecc233ced2fd5.png" />
+<link rel="apple-touch-icon" type="image/x-icon" href="/assets/apple-touch-icon-b049d4bc0dd9626f31db825d61880737befc7835982586d015bded10b4435460.png" />
+<link href="/search/opensearch.xml" rel="search" title="Search GitLab" type="application/opensearchdescription+xml">
+
+
+
+
+<meta content="Kubernetes Operator for GitLab server" name="description">
+<meta content="#ececef" name="theme-color">
+</head>
+
+<body class="tab-width-8 gl-browser-generic gl-platform-other" data-group="cloud-native" data-group-full-path="gitlab-org/cloud-native" data-namespace-id="12316469" data-page="projects:blob:show" data-page-type-id="master/deploy/chart/values.yaml" data-project="gitlab-operator" data-project-full-path="gitlab-org/cloud-native/gitlab-operator" data-project-id="18899486">
+
+<script nonce="FSpUTtUVTUvikBH8MnZ9FA==">
+//<![CDATA[
+gl = window.gl || {};
+gl.client = {"isGeneric":true,"isOther":true};
+
+
+//]]>
+</script>
+
+
+<header class="header-logged-out" data-testid="navbar">
+<a class="gl-sr-only gl-accessibility" href="#content-body">Skip to content</a>
+<div class="container-fluid">
+<nav aria-label="Explore GitLab" class="header-logged-out-nav gl-flex gl-gap-3 gl-justify-between">
+<div class="gl-flex gl-items-center gl-gap-1">
+<span class="gl-sr-only">GitLab</span>
+<a title="Homepage" id="logo" class="header-logged-out-logo has-tooltip" aria-label="Homepage" data-track-label="main_navigation" data-track-action="click_gitlab_logo_link" data-track-property="navigation_top" href="/"><svg aria-hidden="true" role="img" class="tanuki-logo" width="25" height="24" viewBox="0 0 25 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path class="tanuki-shape tanuki" d="m24.507 9.5-.034-.09L21.082.562a.896.896 0 0 0-1.694.091l-2.29 7.01H7.825L5.535.653a.898.898 0 0 0-1.694-.09L.451 9.411.416 9.5a6.297 6.297 0 0 0 2.09 7.278l.012.01.03.022 5.16 3.867 2.56 1.935 1.554 1.176a1.051 1.051 0 0 0 1.268 0l1.555-1.176 2.56-1.935 5.197-3.89.014-.01A6.297 6.297 0 0 0 24.507 9.5Z"
+        fill="#E24329"/>
+  <path class="tanuki-shape right-cheek" d="m24.507 9.5-.034-.09a11.44 11.44 0 0 0-4.56 2.051l-7.447 5.632 4.742 3.584 5.197-3.89.014-.01A6.297 6.297 0 0 0 24.507 9.5Z"
+        fill="#FC6D26"/>
+  <path class="tanuki-shape chin" d="m7.707 20.677 2.56 1.935 1.555 1.176a1.051 1.051 0 0 0 1.268 0l1.555-1.176 2.56-1.935-4.743-3.584-4.755 3.584Z"
+        fill="#FCA326"/>
+  <path class="tanuki-shape left-cheek" d="M5.01 11.461a11.43 11.43 0 0 0-4.56-2.05L.416 9.5a6.297 6.297 0 0 0 2.09 7.278l.012.01.03.022 5.16 3.867 4.745-3.584-7.444-5.632Z"
+        fill="#FC6D26"/>
+</svg>
+
+</a><a class="gl-badge badge badge-pill badge-success canary-badge" data-testid="canary_badge_link" href="https://next.gitlab.com" rel="noopener noreferrer" target="_blank"><span class="gl-badge-content">Next
+</span></a></div>
+<ul class="gl-list-none gl-p-0 gl-m-0 gl-flex gl-gap-3 gl-items-center gl-grow">
+<li class="header-logged-out-nav-item header-logged-out-dropdown md:gl-hidden">
+<button class="header-logged-out-toggle" data-toggle="dropdown" type="button">
+<span class="gl-sr-only">
+Menu
+</span>
+<svg class="s16" data-testid="hamburger-icon"><use href="/assets/icons-aa2c8ddf99d22b77153ca2bb092a23889c12c597fc8b8de94b0f730eb53513f6.svg#hamburger"></use></svg>
+</button>
+<div class="dropdown-menu">
+<ul>
+<li>
+<a href="https://about.gitlab.com/why-gitlab">Why GitLab
+</a></li>
+<li>
+<a href="https://about.gitlab.com/pricing">Pricing
+</a></li>
+<li>
+<a href="https://about.gitlab.com/sales">Contact Sales
+</a></li>
+<li>
+<a href="/explore">Explore</a>
+</li>
+</ul>
+</div>
+</li>
+<li class="header-logged-out-nav-item gl-hidden md:gl-inline-block">
+<a href="https://about.gitlab.com/why-gitlab">Why GitLab
+</a></li>
+<li class="header-logged-out-nav-item gl-hidden md:gl-inline-block">
+<a href="https://about.gitlab.com/pricing">Pricing
+</a></li>
+<li class="header-logged-out-nav-item gl-hidden gl-inline-block">
+<a href="https://about.gitlab.com/sales">Contact Sales
+</a></li>
+<li class="header-logged-out-nav-item gl-hidden md:gl-inline-block">
+<a class="" href="/explore">Explore</a>
+</li>
+</ul>
+<ul class="gl-list-none gl-p-0 gl-m-0 gl-flex gl-gap-3 gl-items-center gl-justify-end">
+<li class="header-logged-out-nav-item">
+<a href="/users/sign_in?redirect_to_referer=yes">Sign in</a>
+</li>
+<li class="header-logged-out-nav-item">
+<a class="gl-button btn btn-md btn-confirm !gl-inline-flex" href="/users/sign_up"><span class="gl-button-text">
+Get free trial
+
+</span>
+
+</a></li>
+</ul>
+</nav>
+</div>
+</header>
+
+<div class="layout-page page-with-super-sidebar">
+<aside class="js-super-sidebar super-sidebar super-sidebar-loading" data-command-palette="{&quot;project_files_url&quot;:&quot;/gitlab-org/cloud-native/gitlab-operator/-/files/master?format=json&quot;,&quot;project_blob_url&quot;:&quot;/gitlab-org/cloud-native/gitlab-operator/-/blob/master&quot;}" data-force-desktop-expanded-sidebar="" data-is-saas="true" data-root-path="/" data-sidebar="{&quot;whats_new_most_recent_release_items_count&quot;:4,&quot;whats_new_version_digest&quot;:&quot;937c934f90f209e92d7ebf87a22c89305dd21799be84d6b7fb21aa907e3e3b8c&quot;,&quot;is_logged_in&quot;:false,&quot;context_switcher_links&quot;:[{&quot;title&quot;:&quot;Explore&quot;,&quot;link&quot;:&quot;/explore&quot;,&quot;icon&quot;:&quot;compass&quot;}],&quot;current_menu_items&quot;:[{&quot;id&quot;:&quot;project_overview&quot;,&quot;title&quot;:&quot;GitLab Operator&quot;,&quot;avatar&quot;:&quot;/uploads/-/system/project/avatar/18899486/gitlab-operator-project.png&quot;,&quot;entity_id&quot;:18899486,&quot;link&quot;:&quot;/gitlab-org/cloud-native/gitlab-operator&quot;,&quot;link_classes&quot;:&quot;shortcuts-project&quot;,&quot;is_active&quot;:false},{&quot;id&quot;:&quot;manage_menu&quot;,&quot;title&quot;:&quot;Manage&quot;,&quot;icon&quot;:&quot;users&quot;,&quot;avatar_shape&quot;:&quot;rect&quot;,&quot;link&quot;:&quot;/gitlab-org/cloud-native/gitlab-operator/activity&quot;,&quot;is_active&quot;:false,&quot;items&quot;:[{&quot;id&quot;:&quot;activity&quot;,&quot;title&quot;:&quot;Activity&quot;,&quot;link&quot;:&quot;/gitlab-org/cloud-native/gitlab-operator/activity&quot;,&quot;link_classes&quot;:&quot;shortcuts-project-activity&quot;,&quot;is_active&quot;:false},{&quot;id&quot;:&quot;members&quot;,&quot;title&quot;:&quot;Members&quot;,&quot;link&quot;:&quot;/gitlab-org/cloud-native/gitlab-operator/-/project_members&quot;,&quot;is_active&quot;:false},{&quot;id&quot;:&quot;labels&quot;,&quot;title&quot;:&quot;Labels&quot;,&quot;link&quot;:&quot;/gitlab-org/cloud-native/gitlab-operator/-/labels&quot;,&quot;is_active&quot;:false}],&quot;separated&quot;:false},{&quot;id&quot;:&quot;plan_menu&quot;,&quot;title&quot;:&quot;Plan&quot;,&quot;icon&quot;:&quot;planning&quot;,&quot;avatar_shape&quot;:&quot;rect&quot;,&quot;link&quot;:&quot;/gitlab-org/cloud-native/gitlab-operator/-/issues&quot;,&quot;is_active&quot;:false,&quot;items&quot;:[{&quot;id&quot;:&quot;project_issue_list&quot;,&quot;title&quot;:&quot;Issues&quot;,&quot;link&quot;:&quot;/gitlab-org/cloud-native/gitlab-operator/-/issues&quot;,&quot;pill_count_field&quot;:&quot;openIssuesCount&quot;,&quot;link_classes&quot;:&quot;shortcuts-issues has-sub-items&quot;,&quot;is_active&quot;:false},{&quot;id&quot;:&quot;boards&quot;,&quot;title&quot;:&quot;Issue boards&quot;,&quot;link&quot;:&quot;/gitlab-org/cloud-native/gitlab-operator/-/boards&quot;,&quot;link_classes&quot;:&quot;shortcuts-issue-boards&quot;,&quot;is_active&quot;:false},{&quot;id&quot;:&quot;milestones&quot;,&quot;title&quot;:&quot;Milestones&quot;,&quot;link&quot;:&quot;/gitlab-org/cloud-native/gitlab-operator/-/milestones&quot;,&quot;is_active&quot;:false},{&quot;id&quot;:&quot;iterations&quot;,&quot;title&quot;:&quot;Iterations&quot;,&quot;link&quot;:&quot;/gitlab-org/cloud-native/gitlab-operator/-/cadences&quot;,&quot;is_active&quot;:false},{&quot;id&quot;:&quot;requirements&quot;,&quot;title&quot;:&quot;Requirements&quot;,&quot;link&quot;:&quot;/gitlab-org/cloud-native/gitlab-operator/-/requirements_management/requirements&quot;,&quot;is_active&quot;:false}],&quot;separated&quot;:false},{&quot;id&quot;:&quot;code_menu&quot;,&quot;title&quot;:&quot;Code&quot;,&quot;icon&quot;:&quot;code&quot;,&quot;avatar_shape&quot;:&quot;rect&quot;,&quot;link&quot;:&quot;/gitlab-org/cloud-native/gitlab-operator/-/merge_requests&quot;,&quot;is_active&quot;:true,&quot;items&quot;:[{&quot;id&quot;:&quot;project_merge_request_list&quot;,&quot;title&quot;:&quot;Merge requests&quot;,&quot;link&quot;:&quot;/gitlab-org/cloud-native/gitlab-operator/-/merge_requests&quot;,&quot;pill_count_field&quot;:&quot;openMergeRequestsCount&quot;,&quot;link_classes&quot;:&quot;shortcuts-merge_requests&quot;,&quot;is_active&quot;:false},{&quot;id&quot;:&quot;files&quot;,&quot;title&quot;:&quot;Repository&quot;,&quot;link&quot;:&quot;/gitlab-org/cloud-native/gitlab-operator/-/tree/master&quot;,&quot;link_classes&quot;:&quot;shortcuts-tree&quot;,&quot;is_active&quot;:true},{&quot;id&quot;:&quot;branches&quot;,&quot;title&quot;:&quot;Branches&quot;,&quot;link&quot;:&quot;/gitlab-org/cloud-native/gitlab-operator/-/branches&quot;,&quot;is_active&quot;:false},{&quot;id&quot;:&quot;commits&quot;,&quot;title&quot;:&quot;Commits&quot;,&quot;link&quot;:&quot;/gitlab-org/cloud-native/gitlab-operator/-/commits/master?ref_type=heads&quot;,&quot;link_classes&quot;:&quot;shortcuts-commits&quot;,&quot;is_active&quot;:false},{&quot;id&quot;:&quot;tags&quot;,&quot;title&quot;:&quot;Tags&quot;,&quot;link&quot;:&quot;/gitlab-org/cloud-native/gitlab-operator/-/tags&quot;,&quot;is_active&quot;:false},{&quot;id&quot;:&quot;graphs&quot;,&quot;title&quot;:&quot;Repository graph&quot;,&quot;link&quot;:&quot;/gitlab-org/cloud-native/gitlab-operator/-/network/master?ref_type=heads&quot;,&quot;link_classes&quot;:&quot;shortcuts-network&quot;,&quot;is_active&quot;:false},{&quot;id&quot;:&quot;compare&quot;,&quot;title&quot;:&quot;Compare revisions&quot;,&quot;link&quot;:&quot;/gitlab-org/cloud-native/gitlab-operator/-/compare?from=master\u0026to=master&quot;,&quot;is_active&quot;:false},{&quot;id&quot;:&quot;file_locks&quot;,&quot;title&quot;:&quot;Locked files&quot;,&quot;link&quot;:&quot;/gitlab-org/cloud-native/gitlab-operator/path_locks&quot;,&quot;is_active&quot;:false}],&quot;separated&quot;:false},{&quot;id&quot;:&quot;build_menu&quot;,&quot;title&quot;:&quot;Build&quot;,&quot;icon&quot;:&quot;rocket&quot;,&quot;avatar_shape&quot;:&quot;rect&quot;,&quot;link&quot;:&quot;/gitlab-org/cloud-native/gitlab-operator/-/pipelines&quot;,&quot;is_active&quot;:false,&quot;items&quot;:[{&quot;id&quot;:&quot;pipelines&quot;,&quot;title&quot;:&quot;Pipelines&quot;,&quot;link&quot;:&quot;/gitlab-org/cloud-native/gitlab-operator/-/pipelines&quot;,&quot;link_classes&quot;:&quot;shortcuts-pipelines&quot;,&quot;is_active&quot;:false},{&quot;id&quot;:&quot;jobs&quot;,&quot;title&quot;:&quot;Jobs&quot;,&quot;link&quot;:&quot;/gitlab-org/cloud-native/gitlab-operator/-/jobs&quot;,&quot;link_classes&quot;:&quot;shortcuts-builds&quot;,&quot;is_active&quot;:false},{&quot;id&quot;:&quot;pipeline_schedules&quot;,&quot;title&quot;:&quot;Pipeline schedules&quot;,&quot;link&quot;:&quot;/gitlab-org/cloud-native/gitlab-operator/-/pipeline_schedules&quot;,&quot;link_classes&quot;:&quot;shortcuts-builds&quot;,&quot;is_active&quot;:false},{&quot;id&quot;:&quot;test_cases&quot;,&quot;title&quot;:&quot;Test cases&quot;,&quot;link&quot;:&quot;/gitlab-org/cloud-native/gitlab-operator/-/quality/test_cases&quot;,&quot;link_classes&quot;:&quot;shortcuts-test-cases&quot;,&quot;is_active&quot;:false},{&quot;id&quot;:&quot;artifacts&quot;,&quot;title&quot;:&quot;Artifacts&quot;,&quot;link&quot;:&quot;/gitlab-org/cloud-native/gitlab-operator/-/artifacts&quot;,&quot;link_classes&quot;:&quot;shortcuts-builds&quot;,&quot;is_active&quot;:false}],&quot;separated&quot;:false},{&quot;id&quot;:&quot;deploy_menu&quot;,&quot;title&quot;:&quot;Deploy&quot;,&quot;icon&quot;:&quot;deployments&quot;,&quot;avatar_shape&quot;:&quot;rect&quot;,&quot;link&quot;:&quot;/gitlab-org/cloud-native/gitlab-operator/-/releases&quot;,&quot;is_active&quot;:false,&quot;items&quot;:[{&quot;id&quot;:&quot;releases&quot;,&quot;title&quot;:&quot;Releases&quot;,&quot;link&quot;:&quot;/gitlab-org/cloud-native/gitlab-operator/-/releases&quot;,&quot;link_classes&quot;:&quot;shortcuts-deployments-releases&quot;,&quot;is_active&quot;:false},{&quot;id&quot;:&quot;packages_registry&quot;,&quot;title&quot;:&quot;Package registry&quot;,&quot;link&quot;:&quot;/gitlab-org/cloud-native/gitlab-operator/-/packages&quot;,&quot;link_classes&quot;:&quot;shortcuts-container-registry&quot;,&quot;is_active&quot;:false},{&quot;id&quot;:&quot;container_registry&quot;,&quot;title&quot;:&quot;Container Registry&quot;,&quot;link&quot;:&quot;/gitlab-org/cloud-native/gitlab-operator/container_registry&quot;,&quot;is_active&quot;:false},{&quot;id&quot;:&quot;model_registry&quot;,&quot;title&quot;:&quot;Model registry&quot;,&quot;link&quot;:&quot;/gitlab-org/cloud-native/gitlab-operator/-/ml/models&quot;,&quot;is_active&quot;:false}],&quot;separated&quot;:false},{&quot;id&quot;:&quot;operations_menu&quot;,&quot;title&quot;:&quot;Operate&quot;,&quot;icon&quot;:&quot;cloud-pod&quot;,&quot;avatar_shape&quot;:&quot;rect&quot;,&quot;link&quot;:&quot;/gitlab-org/cloud-native/gitlab-operator/-/environments&quot;,&quot;is_active&quot;:false,&quot;items&quot;:[{&quot;id&quot;:&quot;environments&quot;,&quot;title&quot;:&quot;Environments&quot;,&quot;link&quot;:&quot;/gitlab-org/cloud-native/gitlab-operator/-/environments&quot;,&quot;link_classes&quot;:&quot;shortcuts-environments&quot;,&quot;is_active&quot;:false},{&quot;id&quot;:&quot;infrastructure_registry&quot;,&quot;title&quot;:&quot;Terraform modules&quot;,&quot;link&quot;:&quot;/gitlab-org/cloud-native/gitlab-operator/-/terraform_module_registry&quot;,&quot;is_active&quot;:false}],&quot;separated&quot;:false},{&quot;id&quot;:&quot;monitor_menu&quot;,&quot;title&quot;:&quot;Monitor&quot;,&quot;icon&quot;:&quot;monitor&quot;,&quot;avatar_shape&quot;:&quot;rect&quot;,&quot;link&quot;:&quot;/gitlab-org/cloud-native/gitlab-operator/-/incidents&quot;,&quot;is_active&quot;:false,&quot;items&quot;:[{&quot;id&quot;:&quot;incidents&quot;,&quot;title&quot;:&quot;Incidents&quot;,&quot;link&quot;:&quot;/gitlab-org/cloud-native/gitlab-operator/-/incidents&quot;,&quot;is_active&quot;:false},{&quot;id&quot;:&quot;service_desk&quot;,&quot;title&quot;:&quot;Service Desk&quot;,&quot;link&quot;:&quot;/gitlab-org/cloud-native/gitlab-operator/-/issues/service_desk&quot;,&quot;is_active&quot;:false}],&quot;separated&quot;:false},{&quot;id&quot;:&quot;analyze_menu&quot;,&quot;title&quot;:&quot;Analyze&quot;,&quot;icon&quot;:&quot;chart&quot;,&quot;avatar_shape&quot;:&quot;rect&quot;,&quot;link&quot;:&quot;/gitlab-org/cloud-native/gitlab-operator/-/value_stream_analytics&quot;,&quot;is_active&quot;:false,&quot;items&quot;:[{&quot;id&quot;:&quot;cycle_analytics&quot;,&quot;title&quot;:&quot;Value stream analytics&quot;,&quot;link&quot;:&quot;/gitlab-org/cloud-native/gitlab-operator/-/value_stream_analytics&quot;,&quot;link_classes&quot;:&quot;shortcuts-project-cycle-analytics&quot;,&quot;is_active&quot;:false},{&quot;id&quot;:&quot;contributors&quot;,&quot;title&quot;:&quot;Contributor analytics&quot;,&quot;link&quot;:&quot;/gitlab-org/cloud-native/gitlab-operator/-/graphs/master?ref_type=heads&quot;,&quot;is_active&quot;:false},{&quot;id&quot;:&quot;ci_cd_analytics&quot;,&quot;title&quot;:&quot;CI/CD analytics&quot;,&quot;link&quot;:&quot;/gitlab-org/cloud-native/gitlab-operator/-/pipelines/charts&quot;,&quot;is_active&quot;:false},{&quot;id&quot;:&quot;repository_analytics&quot;,&quot;title&quot;:&quot;Repository analytics&quot;,&quot;link&quot;:&quot;/gitlab-org/cloud-native/gitlab-operator/-/graphs/master/charts&quot;,&quot;link_classes&quot;:&quot;shortcuts-repository-charts&quot;,&quot;is_active&quot;:false},{&quot;id&quot;:&quot;code_review&quot;,&quot;title&quot;:&quot;Code review analytics&quot;,&quot;link&quot;:&quot;/gitlab-org/cloud-native/gitlab-operator/-/analytics/code_reviews&quot;,&quot;is_active&quot;:false},{&quot;id&quot;:&quot;issues&quot;,&quot;title&quot;:&quot;Issue analytics&quot;,&quot;link&quot;:&quot;/gitlab-org/cloud-native/gitlab-operator/-/analytics/issues_analytics&quot;,&quot;is_active&quot;:false},{&quot;id&quot;:&quot;insights&quot;,&quot;title&quot;:&quot;Insights&quot;,&quot;link&quot;:&quot;/gitlab-org/cloud-native/gitlab-operator/insights/&quot;,&quot;link_classes&quot;:&quot;shortcuts-project-insights&quot;,&quot;is_active&quot;:false},{&quot;id&quot;:&quot;model_experiments&quot;,&quot;title&quot;:&quot;Model experiments&quot;,&quot;link&quot;:&quot;/gitlab-org/cloud-native/gitlab-operator/-/ml/experiments&quot;,&quot;is_active&quot;:false}],&quot;separated&quot;:false}],&quot;current_context_header&quot;:&quot;Project&quot;,&quot;support_path&quot;:&quot;https://about.gitlab.com/get-help/&quot;,&quot;docs_path&quot;:&quot;/help/docs&quot;,&quot;display_whats_new&quot;:true,&quot;show_version_check&quot;:null,&quot;search&quot;:{&quot;search_path&quot;:&quot;/search&quot;,&quot;issues_path&quot;:&quot;/dashboard/issues&quot;,&quot;mr_path&quot;:&quot;/dashboard/merge_requests&quot;,&quot;autocomplete_path&quot;:&quot;/search/autocomplete&quot;,&quot;settings_path&quot;:&quot;/search/settings&quot;,&quot;search_context&quot;:{&quot;group&quot;:{&quot;id&quot;:12316469,&quot;name&quot;:&quot;Cloud Native&quot;,&quot;full_name&quot;:&quot;GitLab.org / Cloud Native&quot;},&quot;group_metadata&quot;:{&quot;issues_path&quot;:&quot;/groups/gitlab-org/cloud-native/-/issues&quot;,&quot;mr_path&quot;:&quot;/groups/gitlab-org/cloud-native/-/merge_requests&quot;},&quot;project&quot;:{&quot;id&quot;:18899486,&quot;name&quot;:&quot;GitLab Operator&quot;},&quot;project_metadata&quot;:{&quot;mr_path&quot;:&quot;/gitlab-org/cloud-native/gitlab-operator/-/merge_requests&quot;,&quot;issues_path&quot;:&quot;/gitlab-org/cloud-native/gitlab-operator/-/issues&quot;},&quot;code_search&quot;:true,&quot;ref&quot;:&quot;master&quot;,&quot;scope&quot;:null,&quot;for_snippets&quot;:null}},&quot;panel_type&quot;:&quot;project&quot;,&quot;shortcut_links&quot;:[{&quot;title&quot;:&quot;Snippets&quot;,&quot;href&quot;:&quot;/explore/snippets&quot;,&quot;css_class&quot;:&quot;dashboard-shortcuts-snippets&quot;},{&quot;title&quot;:&quot;Groups&quot;,&quot;href&quot;:&quot;/explore/groups&quot;,&quot;css_class&quot;:&quot;dashboard-shortcuts-groups&quot;},{&quot;title&quot;:&quot;Projects&quot;,&quot;href&quot;:&quot;/explore/projects/starred&quot;,&quot;css_class&quot;:&quot;dashboard-shortcuts-projects&quot;}],&quot;terms&quot;:&quot;/-/users/terms&quot;}"></aside>
+
+<div class="content-wrapper">
+<div class="broadcast-wrapper">
+
+
+
+
+</div>
+<div class="alert-wrapper alert-wrapper-top-space gl-flex gl-flex-col gl-gap-3 container-fluid container-limited">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+<div class="top-bar-fixed container-fluid" data-testid="top-bar">
+<div class="top-bar-container gl-flex gl-items-center gl-gap-2">
+<div class="gl-grow gl-basis-0 gl-flex gl-items-center gl-justify-start gl-gap-3">
+<button class="gl-button btn btn-icon btn-md btn-default btn-default-tertiary js-super-sidebar-toggle-expand super-sidebar-toggle -gl-ml-3" aria-controls="super-sidebar" aria-expanded="false" aria-label="Primary navigation sidebar" type="button"><svg class="s16 gl-icon gl-button-icon " data-testid="sidebar-icon"><use href="/assets/icons-aa2c8ddf99d22b77153ca2bb092a23889c12c597fc8b8de94b0f730eb53513f6.svg#sidebar"></use></svg>
+
+</button>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"GitLab.org","item":"https://gitlab.com/gitlab-org"},{"@type":"ListItem","position":2,"name":"Cloud Native","item":"https://gitlab.com/gitlab-org/cloud-native"},{"@type":"ListItem","position":3,"name":"GitLab Operator","item":"https://gitlab.com/gitlab-org/cloud-native/gitlab-operator"},{"@type":"ListItem","position":4,"name":"Repository","item":"https://gitlab.com/gitlab-org/cloud-native/gitlab-operator/-/blob/master/deploy/chart/values.yaml"}]}
+
+
+</script>
+<div data-testid="breadcrumb-links" id="js-vue-page-breadcrumbs-wrapper">
+<div data-breadcrumbs-json="[{&quot;text&quot;:&quot;GitLab.org&quot;,&quot;href&quot;:&quot;/gitlab-org&quot;,&quot;avatarPath&quot;:&quot;/uploads/-/system/group/avatar/9970/project_avatar.png&quot;},{&quot;text&quot;:&quot;Cloud Native&quot;,&quot;href&quot;:&quot;/gitlab-org/cloud-native&quot;,&quot;avatarPath&quot;:null},{&quot;text&quot;:&quot;GitLab Operator&quot;,&quot;href&quot;:&quot;/gitlab-org/cloud-native/gitlab-operator&quot;,&quot;avatarPath&quot;:&quot;/uploads/-/system/project/avatar/18899486/gitlab-operator-project.png&quot;},{&quot;text&quot;:&quot;Repository&quot;,&quot;href&quot;:&quot;/gitlab-org/cloud-native/gitlab-operator/-/blob/master/deploy/chart/values.yaml&quot;,&quot;avatarPath&quot;:null}]" id="js-vue-page-breadcrumbs"></div>
+<div id="js-injected-page-breadcrumbs"></div>
+</div>
+
+
+</div>
+<div class="gl-flex-none gl-flex gl-items-center gl-justify-center">
+<div id="js-advanced-search-modal"></div>
+
+</div>
+<div class="gl-grow gl-basis-0 gl-flex gl-items-center gl-justify-end">
+<div id="js-work-item-feedback"></div>
+
+
+</div>
+</div>
+</div>
+
+<div class="container-fluid container-limited project-highlight-puc">
+<main class="content" id="content-body" itemscope itemtype="http://schema.org/SoftwareSourceCode">
+<div class="flash-container flash-container-page sticky" data-testid="flash-container">
+<div id="js-global-alerts"></div>
+</div>
+
+
+
+
+
+
+<div class="js-signature-container" data-signatures-path="/gitlab-org/cloud-native/gitlab-operator/-/commits/6fe72feff375cc48b362397f3396e3bbe4abda2f/signatures?limit=1"></div>
+
+<div class="tree-holder gl-pt-4" id="tree-holder">
+<div data-blob-path="deploy/chart/values.yaml" data-breadcrumbs-can-collaborate="false" data-breadcrumbs-can-edit-tree="false" data-breadcrumbs-can-push-code="false" data-breadcrumbs-can-push-to-branch="false" data-breadcrumbs-new-blob-path="/gitlab-org/cloud-native/gitlab-operator/-/new/master" data-breadcrumbs-new-branch-path="/gitlab-org/cloud-native/gitlab-operator/-/branches/new" data-breadcrumbs-new-dir-path="/gitlab-org/cloud-native/gitlab-operator/-/create_dir/master" data-breadcrumbs-new-tag-path="/gitlab-org/cloud-native/gitlab-operator/-/tags/new" data-breadcrumbs-upload-path="/gitlab-org/cloud-native/gitlab-operator/-/create/master" data-escaped-ref="master" data-history-link="/gitlab-org/cloud-native/gitlab-operator/-/commits/master" data-new-workspace-path="/-/remote_development/workspaces/new" data-project-id="18899486" data-project-path="gitlab-org/cloud-native/gitlab-operator" data-project-root-path="/gitlab-org/cloud-native/gitlab-operator" data-project-short-path="gitlab-operator" data-ref="master" data-ref-type="" id="js-repository-blob-header-app"></div>
+<div class="info-well">
+<div class="well-segment">
+<ul class="blob-commit-info">
+<li class="commit flex-row js-toggle-container" id="commit-6fe72fef">
+<div class="gl-self-start gl-block">
+<a href="/thomasgl-orange"><img alt="Thomas de Grenier de Latour&#39;s avatar" src="https://secure.gravatar.com/avatar/654cd477e660961daf65ae10362a8aa5ef956789a116975c683cf5b9fbe58a1c?s=128&amp;d=identicon" class="avatar s32 gl-inline-block" title="Thomas de Grenier de Latour"></a>
+</div>
+<div class="commit-detail flex-list gl-flex gl-justify-between gl-items-start gl-grow gl-min-w-0">
+<div class="commit-content gl-self-center" data-testid="commit-content">
+<div class="gl-flex sm:gl-hidden gl-gap-3 gl-items-center">
+<div class="committer gl-text-sm">
+<time class="js-timeago" title="Jan 29, 2025 8:41am" datetime="2025-01-29T08:41:31Z" tabindex="0" aria-label="Jan 29, 2025 8:41am" data-toggle="tooltip" data-placement="bottom" data-container="body">Jan 29, 2025</time>
+</div>
+<a class="gl-button btn btn-md btn-link commit-row-message js-onboarding-commit-item" href="/gitlab-org/cloud-native/gitlab-operator/-/commit/6fe72feff375cc48b362397f3396e3bbe4abda2f"><svg class="s16 gl-icon gl-button-icon " data-testid="commit-icon"><use href="/assets/icons-aa2c8ddf99d22b77153ca2bb092a23889c12c597fc8b8de94b0f730eb53513f6.svg#commit"></use></svg>
+<span class="gl-button-text">
+6fe72fef
+
+</span>
+
+</a></div>
+<div class="gl-hidden sm:gl-block">
+<a class="commit-row-message item-title js-onboarding-commit-item " href="/gitlab-org/cloud-native/gitlab-operator/-/commit/6fe72feff375cc48b362397f3396e3bbe4abda2f">Operator chart: Support custom zap-time-encoding</a>
+<span class="commit-row-message d-inline d-sm-none">
+&middot;
+6fe72fef
+</span>
+<button class="gl-button btn btn-icon btn-md btn-default button-ellipsis-horizontal js-toggle-button" data-toggle="tooltip" data-container="body" data-collapse-title="Toggle commit description" data-expand-title="Toggle commit description" data-commit-id="6fe72feff375cc48b362397f3396e3bbe4abda2f" title="Toggle commit description" aria-label="Toggle commit description" type="button"><svg class="s16 gl-icon gl-button-icon " data-testid="ellipsis_h-icon"><use href="/assets/icons-aa2c8ddf99d22b77153ca2bb092a23889c12c597fc8b8de94b0f730eb53513f6.svg#ellipsis_h"></use></svg>
+
+</button>
+<div class="committer gl-text-sm">
+<a class="commit-author-link js-user-link" data-user-id="2178476" href="/thomasgl-orange">Thomas de Grenier de Latour</a> authored <time class="js-timeago" title="Jan 29, 2025 8:41am" datetime="2025-01-29T08:41:31Z" tabindex="0" aria-label="Jan 29, 2025 8:41am" data-toggle="tooltip" data-placement="bottom" data-container="body">Jan 29, 2025</time> and <a href="/clemensbeck"><img alt="Clemens Beck&#39;s avatar" src="/uploads/-/system/user/avatar/13376698/avatar.png?width=32" class="avatar s16 gl-hidden sm:gl-inline-block float-none !gl-mr-0 gl-align-text-bottom" title="Clemens Beck"></a> <a class="commit-committer-link js-user-link" data-user-id="13376698" href="/clemensbeck">Clemens Beck</a> committed <time class="js-timeago" title="Jan 29, 2025 8:41am" datetime="2025-01-29T08:41:31Z" tabindex="0" aria-label="Jan 29, 2025 8:41am" data-toggle="tooltip" data-placement="bottom" data-container="body">Jan 29, 2025</time>
+</div>
+
+
+<pre class="commit-row-description gl-whitespace-pre-wrap js-toggle-content" data-commit-id="6fe72feff375cc48b362397f3396e3bbe4abda2f">&#x000A;Closes <a href="https://gitlab.com/gitlab-org/cloud-native/gitlab-operator/-/issues/1823" data-reference-type="issue" data-original="https://gitlab.com/gitlab-org/cloud-native/gitlab-operator/-/issues/1823" data-link="false" data-link-reference="true" data-issue="161171235" data-project="18899486" data-iid="1823" data-namespace-path="gitlab-org/cloud-native/gitlab-operator" data-project-path="gitlab-org/cloud-native/gitlab-operator" data-issue-type="issue" data-container="body" data-placement="top" title="Configure logs time encoding in gitlab-operator Helm chart" class="gfm gfm-issue">#1823</a>&#x000A;&#x000A;Changelog: added</pre>
+</div>
+</div>
+<div class="commit-actions gl-flex gl-items-center gl-gap-3">
+<div class="gl-hidden sm:gl-flex gl-items-center gl-gap-3">
+
+<div class="js-commit-pipeline-status" data-endpoint="/gitlab-org/cloud-native/gitlab-operator/-/commit/6fe72feff375cc48b362397f3396e3bbe4abda2f/pipelines?ref=master"></div>
+<div class="btn-group gl-hidden sm:gl-flex">
+<span class="gl-button btn btn-label btn-md btn-default dark:!gl-bg-neutral-800" type="button"><span class="gl-button-text gl-font-monospace">
+6fe72fef
+
+</span>
+
+</span><button class="gl-button btn btn-icon btn-md btn-default " title="Copy commit SHA" aria-label="Copy commit SHA" aria-live="polite" data-toggle="tooltip" data-placement="bottom" data-container="body" data-html="true" data-category="primary" data-size="medium" data-clipboard-text="6fe72feff375cc48b362397f3396e3bbe4abda2f" type="button"><svg class="s16 gl-icon gl-button-icon " data-testid="copy-to-clipboard-icon"><use href="/assets/icons-aa2c8ddf99d22b77153ca2bb092a23889c12c597fc8b8de94b0f730eb53513f6.svg#copy-to-clipboard"></use></svg>
+
+</button>
+
+</div>
+</div>
+<div class="gl-block sm:gl-hidden">
+<button class="gl-button btn btn-icon btn-md btn-default button-ellipsis-horizontal text-expander js-toggle-button" data-toggle="tooltip" data-container="body" data-collapse-title="Toggle commit description" data-expand-title="Toggle commit description" title="Toggle commit description" aria-label="Toggle commit description" type="button"><svg class="s16 gl-icon gl-button-icon " data-testid="ellipsis_h-icon"><use href="/assets/icons-aa2c8ddf99d22b77153ca2bb092a23889c12c597fc8b8de94b0f730eb53513f6.svg#ellipsis_h"></use></svg>
+
+</button>
+</div>
+<div data-event-tracking="click_history_control_on_blob_page" data-history-link="/gitlab-org/cloud-native/gitlab-operator/-/commits/master/deploy/chart/values.yaml" id="js-commit-history-link"></div>
+</div>
+</div>
+<div class="gl-block sm:gl-hidden">
+<div class="gl-hidden js-toggle-content gl-mt-6">
+<a class="commit-row-message item-title js-onboarding-commit-item " href="/gitlab-org/cloud-native/gitlab-operator/-/commit/6fe72feff375cc48b362397f3396e3bbe4abda2f">Operator chart: Support custom zap-time-encoding</a>
+<div class="committer gl-text-sm">
+<a class="commit-author-link js-user-link" data-user-id="2178476" href="/thomasgl-orange">Thomas de Grenier de Latour</a> authored <time class="js-timeago" title="Jan 29, 2025 8:41am" datetime="2025-01-29T08:41:31Z" tabindex="0" aria-label="Jan 29, 2025 8:41am" data-toggle="tooltip" data-placement="bottom" data-container="body">Jan 29, 2025</time> and <a href="/clemensbeck"><img alt="Clemens Beck&#39;s avatar" src="/uploads/-/system/user/avatar/13376698/avatar.png?width=32" class="avatar s16 gl-hidden sm:gl-inline-block float-none !gl-mr-0 gl-align-text-bottom" title="Clemens Beck"></a> <a class="commit-committer-link js-user-link" data-user-id="13376698" href="/clemensbeck">Clemens Beck</a> committed <time class="js-timeago" title="Jan 29, 2025 8:41am" datetime="2025-01-29T08:41:31Z" tabindex="0" aria-label="Jan 29, 2025 8:41am" data-toggle="tooltip" data-placement="bottom" data-container="body">Jan 29, 2025</time>
+</div>
+
+<pre class="commit-row-description gl-whitespace-pre-wrap js-toggle-content">&#x000A;Closes <a href="https://gitlab.com/gitlab-org/cloud-native/gitlab-operator/-/issues/1823" data-reference-type="issue" data-original="https://gitlab.com/gitlab-org/cloud-native/gitlab-operator/-/issues/1823" data-link="false" data-link-reference="true" data-issue="161171235" data-project="18899486" data-iid="1823" data-namespace-path="gitlab-org/cloud-native/gitlab-operator" data-project-path="gitlab-org/cloud-native/gitlab-operator" data-issue-type="issue" data-container="body" data-placement="top" title="Configure logs time encoding in gitlab-operator Helm chart" class="gfm gfm-issue">#1823</a>&#x000A;&#x000A;Changelog: added</pre>
+</div>
+</div>
+</li>
+
+</ul>
+</div>
+<div class="gl-hidden sm:gl-block">
+<div data-blob-path="deploy/chart/values.yaml" data-branch="master" data-branch-rules-path="/gitlab-org/cloud-native/gitlab-operator/-/settings/repository#js-branch-rules" data-project-path="gitlab-org/cloud-native/gitlab-operator" id="js-code-owners"></div>
+
+</div>
+</div>
+<div class="blob-content-holder js-per-page" data-blame-per-page="1000" id="blob-content-holder">
+<div data-blob-path="deploy/chart/values.yaml" data-can-download-code="true" data-explain-code-available="false" data-new-workspace-path="/-/remote_development/workspaces/new" data-original-branch="master" data-project-path="gitlab-org/cloud-native/gitlab-operator" data-ref-type="" data-resource-id="gid://gitlab/Project/18899486" data-user-id="" id="js-view-blob-app">
+<div class="gl-spinner-container" role="status"><span aria-hidden class="gl-spinner gl-spinner-md gl-spinner-dark !gl-align-text-bottom"></span><span class="gl-sr-only !gl-absolute">Loading</span>
+</div>
+</div>
+</div>
+
+</div>
+<script nonce="FSpUTtUVTUvikBH8MnZ9FA==">
+//<![CDATA[
+  window.gl = window.gl || {};
+  window.gl.webIDEPath = '/-/ide/project/gitlab-org/cloud-native/gitlab-operator/edit/master/-/deploy/chart/values.yaml'
+
+
+//]]>
+</script>
+<div data-ambiguous="false" data-ref="master" id="js-ambiguous-ref-modal"></div>
+
+</main>
+</div>
+
+
+</div>
+</div>
+
+
+<script nonce="FSpUTtUVTUvikBH8MnZ9FA==">
+//<![CDATA[
+if ('loading' in HTMLImageElement.prototype) {
+  document.querySelectorAll('img.lazy').forEach(img => {
+    img.loading = 'lazy';
+    let imgUrl = img.dataset.src;
+    // Only adding width + height for avatars for now
+    if (imgUrl.indexOf('/avatar/') > -1 && imgUrl.indexOf('?') === -1) {
+      const targetWidth = img.getAttribute('width') || img.width;
+      imgUrl += `?width=${targetWidth}`;
+    }
+    img.src = imgUrl;
+    img.removeAttribute('data-src');
+    img.classList.remove('lazy');
+    img.classList.add('js-lazy-loaded');
+    img.dataset.testid = 'js-lazy-loaded-content';
+  });
+}
+
+//]]>
+</script>
+<script nonce="FSpUTtUVTUvikBH8MnZ9FA==">
+//<![CDATA[
+gl = window.gl || {};
+gl.experiments = {};
+
+
+//]]>
+</script>
+
+</body>
+</html>
+

@@ -1,0 +1,20 @@
+apiVersion: apps.gitlab.com/v1beta1
+kind: GitLab
+metadata:
+  name: gitlab
+spec:
+  chart:
+    version: 8.9.2   #"https://gitlab.com/gitlab-org/cloud-native/gitlab-operator/-/blob/v17.9.2/8.9.2"
+    values:
+      global:
+        hosts:
+          domain: apps.ocp4.example.com # use a real domain here
+        ingress:
+          class: none
+          configureCertmanager: true
+        annotations:
+          route.openshift.io/termination: "edge"
+      certmanager-issuer:
+        email: ravipati@redhat.com # use your real email address here
+      prometheus:
+        install: false
