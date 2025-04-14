@@ -1,0 +1,6 @@
+ oc new-app --name sonar1 --image=docker.io/library/sonarqube:lts-community
+  250  oc get pod -w
+  251  oc get svc
+  252  oc expose svc sonar1
+  253  oc get route
+
