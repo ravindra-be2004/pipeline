@@ -1,0 +1,52 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: git-commit-report
+spec:
+  params:
+  - name: GIT_REPO_URL
+    type: string
+  - name: GIT_USERNAME
+    type: string
+  - name: GIT_EMAIL
+    type: string
+  - name: COMMIT_MSG
+    type: string
+    default: "Add Trivy scan report"
+  - name: REPORT_FILE
+    type: string
+    default: "trivy-report.txt"
+  - name: REPORT_DIR
+    type: string
+    default: "reports"
+  workspaces:
+  - name: source
+    description: Workspace containing the scan report
+  steps:
+    - name: clone
+      image: alpine/git
+      script: |
+      #!/bin/sh
+      set -e
+      cd $(workspaces.source.path)
+      git config --global user.email "$(params.GIT_EMAIL)"
+      git config --global user.name "$(params.GIT_USERNAME)"
+      git clone $(params.GIT_REPO_URL) repo
+    - name: copy-report
+      image: busybox
+      script: |
+      #!/bin/sh
+      set -e
+      timestamp=$(date +"%Y-%m-%d-%H%M%S")
+      mkdir -p $(workspaces.source.path)/repo/$(params.REPORT_DIR)/$timestamp
+      cp $(workspaces.source.path)/$(params.REPORT_FILE) \
+      $(workspaces.source.path)/repo/$(params.REPORT_DIR)/$timestamp/
+    - name: commit-push
+      image: alpine/git
+      workingDir: $(workspaces.source.path)/repo
+      script: |
+      #!/bin/sh
+      set -e
+      git add .
+      git commit -m "$(params.COMMIT_MSG)"
+      git push origin HEAD
