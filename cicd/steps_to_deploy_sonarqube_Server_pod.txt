@@ -1,6 +1,33 @@
- oc new-app --name sonar1 --image=docker.io/library/sonarqube:lts-community
-  250  oc get pod -w
-  251  oc get svc
-  252  oc expose svc sonar1
-  253  oc get route
+#NOte: steps to deploy sonarqube server
+step1:
+oc new-app --name sonar1 --image=docker.io/library/sonarqube:lts-community
+   oc get pod -w
+   oc get svc
+   oc expose svc sonar1
+   oc get route
+
+step2:
+use route and open it in private browser:
+soanar-demo1.apps.ocp4.example.com
+
+step 3:
+it will ask login details:
+default : username: admin password: admin
+then it will ask you to change the password
+
+step4:
+then click on create project:
+select manaully:
+ then project name, project key : demo1
+then click on set up button
+
+step5:
+then how to analysis repo :
+  click locally
+then click generate button
+then it provides token to identified the analysis.
+store that token in txt file 
+
+step6:
+use that token in sonarToken.yaml file
 
