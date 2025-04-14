@@ -1,11 +1,14 @@
 apiVersion: tekton.dev/v1beta1
 kind: PipelineRun
 metadata:
-  name: sonarqube-pipeline-run
+  generateName: git-sonarqube-pipeline-
 spec:
+  serviceAccountName: pipeline
   pipelineRef:
     name: git-sonarqube-pipeline
   params:
+  - name: image-name
+    value: quay.io/ravindra_be2004/web11:latest
   - name: git-url
     value: https://github.com/ravindra-be2004/testrep.git
   - name: git-revision

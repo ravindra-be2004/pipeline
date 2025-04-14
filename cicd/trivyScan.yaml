@@ -1,0 +1,27 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: trivy-image-scan
+spec:
+  params:
+  - name: IMAGE
+    type: string
+    description: Image name (e.g. quay.io/org/app:tag)
+  - name: SEVERITY_THRESHOLD
+    default: "HIGH,CRITICAL"
+  workspaces:
+  - name: output
+  results:
+  - name: scan-result
+    description: Text summary of vulnerabilities
+  steps:
+    - name: scan
+      image: aquasec/trivy:latest
+      workingDir: $(workspaces.output.path)
+      script: |
+        #!/bin/sh
+        echo " Scanning image: $(params.IMAGE)"
+        trivy image --severity $(params.SEVERITY_THRESHOLD) --exit-code 1 --no-progress \
+        --format table -o trivy-report.txt $(params.IMAGE)
+
+        cat trivy-report.txt | tee $(results.scan-result.path)

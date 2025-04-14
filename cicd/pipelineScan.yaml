@@ -55,7 +55,8 @@ spec:
     - name: TLSVERIFY
       value: 'true'
     - name: IMAGE
-      value: 'quay.io/ravindra_be2004/php-info:latest'
+      value: $(params.image-name)
+      #    value: 'quay.io/ravindra_be2004/web11'
     - name: BUILDER_IMAGE
       value: >-
         registry.redhat.io/rhel9/buildah@sha256:6886997da8c92214e99e3e8da47a0f08239172d2544b4edae058d5cb018effab
@@ -64,7 +65,7 @@ spec:
     - name: ENV_VARS
       value: []
     runAfter:
-      - sonar-analysis
+      - sonar-analysis 
     taskRef:
       kind: ClusterTask
       name: s2i-php
@@ -72,4 +73,22 @@ spec:
     - name: source
       workspace: shared-workspace
 
+  - name: trivy-scan
+    taskRef:
+      name: trivy-image-scan
+    runAfter: [s2i-php]
+    params:
+    - name: IMAGE
+      value: $(params.image-name)
+    workspaces:
+    - name: output
+      workspace: shared-workspace  
         
+  - name: deploy-app
+    runAfter: [trivy-scan]
+    taskRef:
+      name: kubectl-deploy
+    workspaces:
+      - name: source
+        workspace: shared-workspace
+

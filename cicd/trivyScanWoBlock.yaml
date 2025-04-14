@@ -1,0 +1,29 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: trivy-image-scan
+spec:
+  params:
+  - name: IMAGE
+    type: string
+    description: Fully qualified container image name
+  - name: SEVERITY
+    default: "HIGH,CRITICAL"
+    description: Severity levels to include in the scan
+  results:
+  - name: scan-summary
+    description: Trivy vulnerability summary
+  workspaces:
+  - name: output
+  steps:
+  - name: scan
+    image: aquasec/trivy:latest
+    workingDir: $(workspaces.output.path)
+    script: |
+      #!/bin/sh
+      echo " Running Trivy scan on: $(params.IMAGE)"
+      trivy image --severity $(params.SEVERITY) --format table --no-progress -o trivy-report.txt $(params.IMAGE)
+      echo "--- Trivy scan completed ---"
+      echo "Scan report stored in workspace output."
+      #cp trivy-report.txt $(results.scan-summary.path)
+      #      cat trivy-report.txt

@@ -1,0 +1,13 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: kubectl-deploy
+spec:
+  workspaces:
+  - name: source
+  steps:
+    - name: deploy
+      image: bitnami/kubectl
+      workingDir: $(workspaces.source.path)
+      script: |
+        kubectl create deployment myapp --image=quay.io/ravindra_be2004/web11:latest  
