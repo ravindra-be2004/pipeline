@@ -1,0 +1,43 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: copy-report
+  serviceAccountName: github-sa
+spec:
+  params:
+    #  - name: GIT_REPO_URL
+    #    type: string
+    #    default: "https://github.com/ravindra-be2004/pipeline"
+    #  - name: GIT_USERNAME
+    #    type: string
+    #    default: "ravindra-be2004"
+    #  - name: GIT_EMAIL
+    #    type: string
+    #    default: "ravindra.be2004@gmail.com"
+  - name: COMMIT_MSG
+    type: string
+    default: "Add Trivy scan report"
+  - name: REPORT_FILE
+    type: string
+    default: "trivy-report.txt"
+  - name: REPORT_DIR
+    type: string
+    default: "reports"
+  workspaces:
+  - name: source
+    description: Workspace containing the scan report
+  steps:
+    - name: copy-report
+      image: busybox
+      script: |
+        #!/bin/sh
+        set -e
+        echo "copy report step started"
+        timestamp=$(date +"%Y-%m-%d-%H%M%S")
+        mkdir -p $(workspaces.source.path)/$(params.REPORT_DIR)/$timestamp
+        cp $(workspaces.source.path)/$(params.REPORT_FILE) \
+        $(workspaces.source.path)/$(params.REPORT_DIR)/$timestamp/
+        #echo "copy report step $(workspaces.source.path)/$(params.REPORT_FILE)"
+        #echo "path of repo dir $(workspaces.source.path)/$(params.REPORT_DIR)/"
+        # ls $(workspaces.source.path)/$(params.REPORT_DIR)/$timestamp/
+        # ls $(workspaces.source.path)/$(params.REPORT_FILE)

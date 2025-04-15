@@ -4,6 +4,19 @@ metadata:
   name: git-sonarqube-pipeline
 spec:
   params:
+  - name: GIT_REPO_URL
+    type: string
+    description: git repo url for trivy scan report
+
+  - name: COMMIT_MSG
+    type: string
+    description: git commit message for trivy scan report
+  - name: GIT_EMAIL
+    type: string
+    description: git repo url for trivy scan report
+  - name: GIT_USERNAME
+    type: string
+    description: git username for trivy scan report
   - name: image-name
     type: string
   - name: git-url
@@ -91,22 +104,3 @@ spec:
     workspaces:
       - name: source
         workspace: shared-workspace
-
-- name: commit-report
-  runAfter: [trivy-scan]
-  taskRef:
-    name: git-commit-report
-  params:
-    - name: GIT_REPO_URL
-      value: https://github.com/ravindra-be2004/pipeline
-    - name: GIT_USERNAME
-      value: ravindra-be2004
-    - name: GIT_EMAIL
-      value: ravindra.be2004@gmail.com
-    - name: COMMIT_MSG
-      value: "Trivy report for $(params.image-name)"
-  workspaces:
-    - name: source
-      workspace: shared-workspace
-
-          

@@ -1,0 +1,24 @@
+apiVersion: tekton.dev/v1beta1
+kind: PipelineRun
+metadata:
+  generateName: git-cli-example-run-
+spec:
+  serviceAccountName: pipeline
+  pipelineRef:
+    name: git-cli-example-pipeline
+  params:
+  - name: repo-url
+    value: https://github.com/ravindra-be2004/pipeline.git
+  - name: revision
+    value: main
+  workspaces:
+  - name: shared-workspace
+    volumeClaimTemplate:
+      metadata:
+        name: pvc1
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        resources:
+          requests:
+            storage: 1Gi
+

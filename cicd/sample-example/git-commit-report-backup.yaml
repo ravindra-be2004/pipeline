@@ -1,0 +1,71 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: git-commit-report
+  serviceAccountName: github-sa
+spec:
+  params:
+  - name: GIT_REPO_URL
+    type: string
+    default: "https://github.com/ravindra-be2004/pipeline"
+  - name: GIT_USERNAME
+    type: string
+    default: "ravindra-be2004"
+  - name: GIT_EMAIL
+    type: string
+    default: "ravindra.be2004@gmail.com"
+  - name: COMMIT_MSG
+    type: string
+    default: "Add Trivy scan report"
+  - name: REPORT_FILE
+    type: string
+    default: "trivy-report.txt"
+  - name: REPORT_DIR
+    type: string
+    default: "reports"
+  workspaces:
+  - name: source
+    description: Workspace containing the scan report
+  steps:
+    - name: clone
+      image: alpine/git
+      script: |
+        #!/bin/sh
+        set -e
+        echo "cloneing step started"
+        cd $(workspaces.source.path)
+        git config --global user.email "ravindra.be2004@gmail.com"
+        git config --global user.name "ravindra-be2004"
+
+        echo "clone step=> $(params.GIT_REPO_URL)"
+        git clone $(params.GIT_REPO_URL)
+    - name: copy-report
+      image: busybox
+      script: |
+        #!/bin/sh
+        set -e
+        
+        echo "copy report step started"
+        timestamp=$(date +"%Y-%m-%d-%H%M%S")
+        mkdir -p $(workspaces.source.path)/$(params.REPORT_DIR)/$timestamp
+        cp $(workspaces.source.path)/$(params.REPORT_FILE) \
+        $(workspaces.source.path)/$(params.REPORT_DIR)/$timestamp/
+
+
+        echo "copy report step $(workspaces.source.path)/$(params.REPORT_FILE)"
+        echo "path of repo dir $(workspaces.source.path)/$(params.REPORT_DIR)/"
+        ls $(workspaces.source.path)/$(params.REPORT_DIR)/$timestamp/
+        ls $(workspaces.source.path)/$(params.REPORT_FILE)
+    - name: commit-push
+      image: alpine/git
+      workingDir: $(workspaces.source.path)
+      script: |
+        #!/bin/sh
+        set -e
+        git config --global --add safe.directory /workspace/source
+        echo "commit-push step started"
+        git add .
+        git commit -m "$(params.COMMIT_MSG)"
+        git push origin HEAD
+
+        echo "commit-push step finished"

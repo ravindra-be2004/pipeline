@@ -7,6 +7,14 @@ spec:
   pipelineRef:
     name: git-sonarqube-pipeline
   params:
+  - name: GIT_REPO_URL
+    value: https://github.com/ravindra-be2004/pipeline
+  - name: commit-message
+    value: "Trivy report for image"
+  - name: GIT_USER_EMAIL
+    value: ravindra.be2004@gmail.com
+  - name: GIT_USER_NAME  
+    value: ravindra-be2004
   - name: image-name
     value: quay.io/ravindra_be2004/web11:latest
   - name: git-url

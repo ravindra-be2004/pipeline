@@ -1,0 +1,29 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: git-cli
+spec:
+  description: >-
+    This task performs git operations using a script provided by the user.
+  params:
+  - name: GIT_USER_NAME
+    type: string
+    default: ravindra-be2004
+  - name: GIT_USER_EMAIL
+    type: string
+    default: ravindra.be2004@gmail.com
+  - name: GIT_SCRIPT
+    type: string
+  workspaces:
+  - name: source
+    description: The workspace consisting of the git repo
+  steps:
+  - name: git
+    image: alpine/git:v2.26.2
+    script: |
+      #!/bin/sh
+      set -e
+      git config --global user.name "$(params.GIT_USER_NAME)"
+      git config --global user.email "$(params.GIT_USER_EMAIL)"
+      $(params.GIT_SCRIPT)
+    workingDir: $(workspaces.source.path)

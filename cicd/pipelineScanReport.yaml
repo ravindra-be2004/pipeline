@@ -1,0 +1,135 @@
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: git-sonarqube-pipeline
+spec:
+  params:
+  - name: commit-message
+    type: string
+    description: git commit message for trivy scan report
+      # - name: GIT_USER_EMAIL
+      #    type: string
+      #    description: git repo url for trivy scan report
+      #  - name: GIT_USER_NAME
+      #    type: string
+      #    description: git username for trivy scan report
+  - name: image-name
+    type: string
+  - name: git-url
+    type: string
+  - name: git-revision
+    type: string
+    default: main
+  - name: SONAR_HOST_URL
+    type: string
+  - name: PROJECT_KEY
+    type: string
+  workspaces:
+  - name: shared-workspace
+  tasks:
+  - name: clone-repo
+    taskRef:
+      name: git-clone
+      kind: ClusterTask
+    workspaces:
+    - name: output
+      workspace: shared-workspace
+    params:
+      - name: url
+        value: $(params.git-url)
+      - name: revision
+        value: $(params.git-revision)
+      - name: deleteExisting
+        value: "true" 
+
+  - name: sonar-analysis
+    taskRef:
+      name: sonarqube-scanner
+    runAfter:
+      - clone-repo
+    workspaces:
+    - name: source
+      workspace: shared-workspace
+    params:
+      - name: SONAR_HOST_URL
+        value: $(params.SONAR_HOST_URL)
+      - name: PROJECT_KEY
+        value: $(params.PROJECT_KEY)
+  - name: s2i-php
+    params:
+    - name: VERSION
+      value: latest
+    - name: PATH_CONTEXT
+      value: .
+    - name: TLSVERIFY
+      value: 'true'
+    - name: IMAGE
+      value: $(params.image-name)
+      #    value: 'quay.io/ravindra_be2004/web11'
+    - name: BUILDER_IMAGE
+      value: >-
+        registry.redhat.io/rhel9/buildah@sha256:6886997da8c92214e99e3e8da47a0f08239172d2544b4edae058d5cb018effab
+    - name: SKIP_PUSH
+      value: 'false'
+    - name: ENV_VARS
+      value: []
+    runAfter:
+      - sonar-analysis 
+    taskRef:
+      kind: ClusterTask
+      name: s2i-php
+    workspaces:
+    - name: source
+      workspace: shared-workspace
+
+  - name: trivy-scan
+    taskRef:
+      name: trivy-image-scan
+    runAfter: [s2i-php]
+    params:
+    - name: IMAGE
+      value: $(params.image-name)
+    workspaces:
+    - name: output
+      workspace: shared-workspace  
+        
+  - name: deploy-app
+    runAfter: [commit-and-push]
+    taskRef:
+      name: kubectl-deploy
+    workspaces:
+      - name: source
+        workspace: shared-workspace
+
+  - name: copy-report
+    taskRef:
+      name: copy-report
+    runAfter:
+    - trivy-scan
+    workspaces:
+    - name: source
+      workspace: shared-workspace    
+
+  - name: commit-and-push
+    runAfter:
+      - copy-report 
+    taskRef:
+      name: git-cli
+      kind: ClusterTask
+    params:
+      - name: GIT_USER_NAME
+        value: "ravindra-be2004"
+      - name: GIT_USER_EMAIL
+        value: "ravindra.be2004@gmail.com"
+      - name: GIT_SCRIPT
+        value: |   
+          # echo "This is a test file from Tekton11" > tekton-demo11.txt
+          git config --global --add safe.directory $(pwd)
+          git checkout -b $(params.git-revision)
+          #ls $(workspaces.source.path)
+          git add .
+          git commit -m "$(params.commit-message)" || echo "No changes to commit"
+          git push -u origin $(params.git-revision)
+    workspaces:
+      - name: source
+        workspace: shared-workspace      
