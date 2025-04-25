@@ -7,12 +7,6 @@ spec:
   - name: commit-message
     type: string
     description: git commit message for trivy scan report
-      # - name: GIT_USER_EMAIL
-      #    type: string
-      #    description: git repo url for trivy scan report
-      #  - name: GIT_USER_NAME
-      #    type: string
-      #    description: git username for trivy scan report
   - name: image-name
     type: string
   - name: git-url
@@ -46,7 +40,8 @@ spec:
     taskRef:
       name: sonarqube-scanner
     runAfter:
-      - clone-repo
+      #      - clone-repo
+      - deploy-app 
     workspaces:
     - name: source
       workspace: shared-workspace
@@ -55,6 +50,18 @@ spec:
         value: $(params.SONAR_HOST_URL)
       - name: PROJECT_KEY
         value: $(params.PROJECT_KEY)
+
+  - name: build-php-image
+    taskRef:
+      name: s2i-build-php
+    runAfter:
+    - oc-deploy
+    workspaces:
+    - name: source
+      workspace: shared-workspace
+    params:
+    - name: IMAGE
+      value: $(params.image-name)
 
   - name: s2i-php
     params:
@@ -75,7 +82,8 @@ spec:
     - name: ENV_VARS
       value: []
     runAfter:
-      - sonar-analysis 
+      #    - sonar-analysis 
+    - deploy-app 
     taskRef:
       kind: ClusterTask
       name: s2i-php
@@ -86,7 +94,8 @@ spec:
   - name: trivy-scan
     taskRef:
       name: trivy-image-scan
-    runAfter: [s2i-php]
+        #runAfter: [s2i-php]
+    runAfter: [deploy-app]
     params:
     - name: IMAGE
       value: $(params.image-name)
@@ -95,7 +104,8 @@ spec:
       workspace: shared-workspace  
         
   - name: deploy-app
-    runAfter: [commit-and-push]
+    #    runAfter: [commit-and-push]
+    runAfter: [build-php-image]
     params:
     - name: image-name
       value: $(params.image-name)
@@ -109,14 +119,30 @@ spec:
     taskRef:
       name: copy-report
     runAfter:
-    - trivy-scan
+      #    - trivy-scan
+    - deploy-app
     workspaces:
     - name: source
       workspace: shared-workspace    
 
+  - name: oc-deploy
+    runAfter:
+    - "clone-repo"
+    taskRef:
+      name: openshift-client
+    workspaces:
+    - name: manifest-dir
+      workspace: shared-workspace
+    params:
+    - name: SCRIPT
+      value: >-
+        oc new-build registry.redhat.io/rhel8/php-82@sha256:d44e06819c26014b91d48bf432011af4d3beb2b9b2167f43c0041171bbc4643b~https://github.com/ravindra-be2004/testrep --name web12 --to-docker=quay.io/ravindra_be2004/web12:latest
+        #        oc create deploy mydemo --image quay.io/ravindra_be2004/web11:latest
+
   - name: commit-and-push
     runAfter:
-      - copy-report 
+      #    - copy-report 
+    - deploy-app 
     taskRef:
       name: git-cli
       kind: ClusterTask

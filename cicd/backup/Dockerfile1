@@ -1,0 +1,7 @@
+FROM registry.access.redhat.com/ubi8/ubi
+
+RUN curl -s https://mirror.openshift.com/pub/openshift-v4/clients/source-to-image/latest/source-to-image.tar.gz \
+    | tar -xz && mv s2i /usr/local/bin
+
+CMD ["s2i", "version"]
+

@@ -22,7 +22,8 @@ spec:
     script: |
       #!/bin/sh
       echo " Running Trivy scan on: $(params.IMAGE)"
-      trivy image --severity $(params.SEVERITY) --format table --no-progress -o trivy-report.txt $(params.IMAGE)
+      trivy image --severity $(params.SEVERITY) \
+       --format table --no-progress -o trivy-report.txt $(params.IMAGE)
       echo "--- Trivy scan completed ---"
       echo "Scan report stored in workspace output."
       #cp trivy-report.txt $(results.scan-summary.path)

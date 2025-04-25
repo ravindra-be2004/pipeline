@@ -1,0 +1,19 @@
+apiVersion: tekton.dev/v1
+kind: Task
+metadata:
+  name: s2i-build-php
+spec:
+  params:
+  - name: IMAGE
+  - name: BUILDER_IMAGE
+    default: registry.access.redhat.com/php:8.1-ubi8
+  workspaces:
+  - name: source
+  steps:
+  - name: s2i-build
+    #image: quay.io/openshift-pipelines/s2i
+    image: registry.redhat.io/rhel9/s2i-core:9.5@sha256:e3a0894b84aceb4ed4c9988300032c5d95f80d133999d2e84d6c1059ae72e777
+    script: |
+      #!/bin/sh
+      s2i build $(workspaces.source.path) $(params.BUILDER_IMAGE) $(params.IMAGE)
+   

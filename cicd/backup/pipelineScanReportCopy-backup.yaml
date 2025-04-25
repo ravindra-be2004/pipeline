@@ -7,12 +7,6 @@ spec:
   - name: commit-message
     type: string
     description: git commit message for trivy scan report
-      # - name: GIT_USER_EMAIL
-      #    type: string
-      #    description: git repo url for trivy scan report
-      #  - name: GIT_USER_NAME
-      #    type: string
-      #    description: git username for trivy scan report
   - name: image-name
     type: string
   - name: git-url
@@ -96,9 +90,6 @@ spec:
         
   - name: deploy-app
     runAfter: [commit-and-push]
-    params:
-    - name: image-name
-      value: $(params.image-name)
     taskRef:
       name: kubectl-deploy
     workspaces:
@@ -128,7 +119,6 @@ spec:
       - name: GIT_SCRIPT
         value: |   
           # echo "This is a test file from Tekton11" > tekton-demo11.txt
-          #          git clone https://github.com/ravindra-be2004/scanreport
           git config --global --add safe.directory $(pwd)
           git checkout -b $(params.git-revision)
           #ls $(workspaces.source.path)

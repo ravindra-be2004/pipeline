@@ -30,3 +30,7 @@ spec:
         -Dsonar.sources=. \
         -Dsonar.host.url=$(params.SONAR_HOST_URL) \
         -Dsonar.login=$SONAR_TOKEN
+        #      ls $(workspaces.source.path)/$(params.PROJECT_DIR)
+
+
+
