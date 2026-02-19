@@ -10,7 +10,7 @@ spec:
   - name: source
   steps:
     - name: deploy
-      image: bitnami/kubectl
+      image: registry.connect.redhat.com/seldonio/kubectl:1.14.3
       workingDir: $(workspaces.source.path)
       script: |
         kubectl create deployment myapp --image=$(params.image-name)  
