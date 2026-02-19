@@ -7,5 +7,5 @@ metadata:
 type: kubernetes.io/basic-auth
 stringData:
   username: ravindra-be2004
-  password: "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" 
+  password: "token here" 
 
