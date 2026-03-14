@@ -8,7 +8,7 @@ spec:
     type: string
   steps:
     - name: echo
-      image: alpine
+      image: registry.access.redhat.com/ubi8/ubi
       script: |
         #!/bin/sh
         echo "Hello $(params.username), Welcome to the World of Pipelines !!"
