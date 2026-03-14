@@ -6,6 +6,6 @@ metadata:
     tekton.dev/git-0: https://github.com
 type: kubernetes.io/basic-auth
 stringData:
-  username: ""
-  password: "" 
+  username: "ravindra-be2004"
+  password: "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" 
 

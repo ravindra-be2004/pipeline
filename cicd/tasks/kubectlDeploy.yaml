@@ -10,8 +10,10 @@ spec:
   - name: source
   steps:
     - name: deploy
-      image: registry.connect.redhat.com/seldonio/kubectl:1.14.3
+      image: image-registry.openshift-image-registry.svc:5000/openshift/cli:latest #registry.connect.redhat.com/seldonio/kubectl:1.14.3
       workingDir: $(workspaces.source.path)
       script: |
-        kubectl create deployment myapp --image=$(params.image-name)  
+        oc create deployment myapp --image=$(params.image-name)  
+        oc expose deploy/myapp --port 8080
+        oc expose svc/myapp 
         #        kubectl create deployment myapp --image=quay.io/ravindra_be2004/web11:latest  
