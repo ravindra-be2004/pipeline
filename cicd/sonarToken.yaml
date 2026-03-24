@@ -4,6 +4,7 @@ metadata:
   name: sonarqube-token
 type: Opaque
 stringData:
-  SONAR_TOKEN: "sqp_cc0911e0cff36f2308f17dae35b6d0244787f0ae"
+  #  SONAR_TOKEN: "sqp_4dacc2129768f4e7fb2f6ac2b661e946f9125cc1"
+  SONAR_TOKEN: "sqp_2b7e82753dd1c5ed10e6c63cee16b9855d0d7120"
     
 

@@ -27,6 +27,7 @@ spec:
     type: string
   workspaces:
   - name: shared-workspace
+    #  - name: sonar-settings
   tasks:
   - name: clone-repo
     taskRef:
@@ -49,13 +50,24 @@ spec:
       - name: deleteExisting
         value: "true" 
 
+  - name: sonar-analysis
+    taskRef:
+      name: sonarqube-scanner
+    runAfter:
+      - clone-repo
+    workspaces:
+      - name: source
+        workspace: shared-workspace
+        #    - name: sonar-settings
+        #      workspace: sonar-settings
+    params:
+      - name: SONAR_HOST_URL
+        value: $(params.SONAR_HOST_URL)
+      - name: PROJECT_KEY
+        value: $(params.PROJECT_KEY)
 
   - name: s2i-php
     params:
-    - name: PARAMS_IMAGE  
-      value: 'quay.io/ravindra_be2004/web16'
-    - name: PARAMS_VERSION
-      value: 'latest'
     - name: VERSION
       value: latest
     - name: PATH_CONTEXT
@@ -63,8 +75,8 @@ spec:
     - name: TLSVERIFY
       value: 'true'
     - name: IMAGE
-      #value: $(params.image-name)
-      value: 'quay.io/ravindra_be2004/web16'
+      value: $(params.image-name)
+      #    value: 'quay.io/ravindra_be2004/web11'
     - name: BUILDER_IMAGE
       value: >-
         registry.redhat.io/rhel9/buildah@sha256:6886997da8c92214e99e3e8da47a0f08239172d2544b4edae058d5cb018effab
@@ -73,7 +85,7 @@ spec:
     - name: ENV_VARS
       value: []
     runAfter:
-      - clone-repo
+      - sonar-analysis
     taskRef:
       resolver: cluster
       params:
@@ -87,9 +99,19 @@ spec:
     - name: source
       workspace: shared-workspace
 
+  - name: trivy-scan
+    taskRef:
+      name: trivy-image-scan
+    runAfter: [s2i-php]
+    params:
+    - name: IMAGE
+      value: $(params.image-name)
+    workspaces:
+    - name: output
+      workspace: shared-workspace  
         
   - name: deploy-app
-    runAfter: [s2i-php]
+    runAfter: [trivy-scan]
     params:
     - name: image-name
       value: $(params.image-name)
