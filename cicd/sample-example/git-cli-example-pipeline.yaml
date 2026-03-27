@@ -1,0 +1,55 @@
+apiVersion: tekton.dev/v1
+kind: Pipeline
+metadata:
+  name: git-cli-example-pipeline
+spec:
+  params:
+  - name: repo-url
+    type: string
+  - name: revision
+    type: string
+    default: main
+  workspaces:
+  - name: shared-workspace
+  tasks:
+  - name: clone-repo
+    taskRef:
+      name: git-clone
+      kind: ClusterTask
+    params:
+    - name: url
+      value: $(params.repo-url)
+    - name: revision
+      value: $(params.revision)
+    - name: deleteExisting
+      value: "true"
+    workspaces:
+    - name: output
+      workspace: shared-workspace
+
+  - name: commit-changes
+    runAfter:
+      - clone-repo
+    taskRef:
+      name: git-cli
+      kind: ClusterTask
+    params:
+      - name: GIT_USER_NAME
+        value: "ravindra-be2004"
+      - name: GIT_USER_EMAIL
+        value: "ravindra.be2004@gmail.com"
+      - name: GIT_SCRIPT
+        value: |
+          echo "This is a test file from Tekton11" > tekton-demo11.txt
+          git config --global --add safe.directory /workspace/source
+          git checkout -b $(params.revision)
+          ls $(workspaces.source.path)
+          #     cd $(workspaces.source.path)
+          #          git status
+          #          git init
+          git add .
+          git commit -am "Add demo file from Tekton"
+          git push -u origin $(params.revision)
+    workspaces:
+    - name: source
+      workspace: shared-workspace

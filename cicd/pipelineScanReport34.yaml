@@ -1,0 +1,124 @@
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: git-sonarqube-pipeline
+spec:
+  params:
+  - name: commit-message
+    type: string
+    description: git commit message for trivy scan report
+      # - name: GIT_USER_EMAIL
+      #    type: string
+      #    description: git repo url for trivy scan report
+      #  - name: GIT_USER_NAME
+      #    type: string
+      #    description: git username for trivy scan report
+  - name: image-name
+    type: string
+  - name: git-url
+    type: string
+    default: https://github.com/ravindra-be2004/testrep.git
+  - name: git-revision
+    type: string
+    default: main
+  - name: SONAR_HOST_URL
+    type: string
+  - name: PROJECT_KEY
+    type: string
+  workspaces:
+  - name: shared-workspace
+    #  - name: sonar-settings
+  tasks:
+  - name: clone-repo
+    taskRef:
+      resolver: cluster
+      params:
+        - name: kind
+          value: task
+        - name: name
+          value: git-clone
+        - name: namespace
+          value: openshift-pipelines
+    workspaces:
+    - name: output
+      workspace: shared-workspace
+    params:
+      - name: URL
+        value: https://github.com/ravindra-be2004/testrep.git #$(params.git-url)
+      - name: REVISION 
+        value: $(params.git-revision)
+      - name: deleteExisting
+        value: "true" 
+
+  - name: sonar-analysis
+    taskRef:
+      name: sonarqube-scanner
+    runAfter:
+      - deploy-app
+    workspaces:
+      - name: source
+        workspace: shared-workspace
+        #    - name: sonar-settings
+        #      workspace: sonar-settings
+    params:
+      - name: SONAR_HOST_URL
+        value: $(params.SONAR_HOST_URL)
+      - name: PROJECT_KEY
+        value: $(params.PROJECT_KEY)
+
+  - name: s2i-php
+    params:
+    - name: VERSION
+      value: latest
+    - name: PATH_CONTEXT
+      value: .
+    - name: TLSVERIFY
+      value: 'true'
+    - name: IMAGE
+      value: $(params.image-name)
+      #    value: 'quay.io/ravindra_be2004/web11'
+    - name: BUILDER_IMAGE
+      value: >-
+        registry.redhat.io/rhel9/buildah@sha256:6886997da8c92214e99e3e8da47a0f08239172d2544b4edae058d5cb018effab
+    - name: SKIP_PUSH
+      value: 'false'
+    - name: ENV_VARS
+      value: []
+    runAfter:
+      - clone-repo
+    taskRef:
+      resolver: cluster
+      params:
+        - name: kind
+          value: task
+        - name: name
+          value: s2i-php
+        - name: namespace
+          value: openshift-pipelines
+    workspaces:
+    - name: source
+      workspace: shared-workspace
+
+  - name: trivy-scan
+    taskRef:
+      name: trivy-image-scan
+    runAfter: [s2i-php]
+    params:
+    - name: IMAGE
+      value: $(params.image-name)
+    workspaces:
+    - name: output
+      workspace: shared-workspace  
+        
+  - name: deploy-app
+    runAfter: [trivy-scan]
+    params:
+    - name: image-name
+      value: $(params.image-name)
+    taskRef:
+      name: kubectl-deploy
+    workspaces:
+      - name: source
+        workspace: shared-workspace
+
+

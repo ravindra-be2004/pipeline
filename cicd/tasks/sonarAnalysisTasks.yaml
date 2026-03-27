@@ -15,7 +15,7 @@ spec:
   - name: source
   steps:
   - name: run-sonarqube
-    image: sonarsource/sonar-scanner-cli:latest
+    image: docker.io/sonarsource/sonar-scanner-cli:4.5@sha256:b8c95a37025f3c13162118cd55761ea0b2a13d1837f9deec51b7b6d82c52040a #sonarsource/sonar-scanner-cli:latest
     workingDir: $(workspaces.source.path)/$(params.PROJECT_DIR)
     env:
     - name: SONAR_TOKEN
@@ -30,3 +30,7 @@ spec:
         -Dsonar.sources=. \
         -Dsonar.host.url=$(params.SONAR_HOST_URL) \
         -Dsonar.login=$SONAR_TOKEN
+        #      ls $(workspaces.source.path)/$(params.PROJECT_DIR)
+
+
+

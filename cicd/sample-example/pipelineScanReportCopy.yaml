@@ -1,0 +1,125 @@
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: git-sonarqube-pipeline
+spec:
+  params:
+  - name: GIT_REPO_URL
+    type: string
+    description: git repo url for trivy scan report
+
+  - name: COMMIT_MSG
+    type: string
+    description: git commit message for trivy scan report
+  - name: GIT_EMAIL
+    type: string
+    description: git repo url for trivy scan report
+  - name: GIT_USERNAME
+    type: string
+    description: git username for trivy scan report
+  - name: image-name
+    type: string
+  - name: git-url
+    type: string
+  - name: git-revision
+    type: string
+    default: main
+  - name: SONAR_HOST_URL
+    type: string
+  - name: PROJECT_KEY
+    type: string
+  workspaces:
+  - name: shared-workspace
+  tasks:
+  - name: clone-repo
+    taskRef:
+      name: git-clone
+      kind: ClusterTask
+    workspaces:
+    - name: output
+      workspace: shared-workspace
+    params:
+      - name: url
+        value: $(params.git-url)
+      - name: revision
+        value: $(params.git-revision)
+      - name: deleteExisting
+        value: "true" 
+
+  - name: sonar-analysis
+    taskRef:
+      name: sonarqube-scanner
+    runAfter:
+      - clone-repo
+    workspaces:
+    - name: source
+      workspace: shared-workspace
+    params:
+      - name: SONAR_HOST_URL
+        value: $(params.SONAR_HOST_URL)
+      - name: PROJECT_KEY
+        value: $(params.PROJECT_KEY)
+  - name: s2i-php
+    params:
+    - name: VERSION
+      value: latest
+    - name: PATH_CONTEXT
+      value: .
+    - name: TLSVERIFY
+      value: 'true'
+    - name: IMAGE
+      value: $(params.image-name)
+      #    value: 'quay.io/ravindra_be2004/web11'
+    - name: BUILDER_IMAGE
+      value: >-
+        registry.redhat.io/rhel9/buildah@sha256:6886997da8c92214e99e3e8da47a0f08239172d2544b4edae058d5cb018effab
+    - name: SKIP_PUSH
+      value: 'false'
+    - name: ENV_VARS
+      value: []
+    runAfter:
+      - sonar-analysis 
+    taskRef:
+      kind: ClusterTask
+      name: s2i-php
+    workspaces:
+    - name: source
+      workspace: shared-workspace
+
+  - name: trivy-scan
+    taskRef:
+      name: trivy-image-scan
+    runAfter: [s2i-php]
+    params:
+    - name: IMAGE
+      value: $(params.image-name)
+    workspaces:
+    - name: output
+      workspace: shared-workspace  
+        
+  - name: deploy-app
+    runAfter: [trivy-scan]
+    taskRef:
+      name: kubectl-deploy
+    workspaces:
+      - name: source
+        workspace: shared-workspace
+
+  - name: commit-report
+    runAfter: [trivy-scan]
+    taskRef:
+      name: git-commit-report
+    params:
+    - name: GIT_REPO_URL
+      value: "https://github.com/ravindra-be2004/pipeline"
+    - name: GIT_USERNAME
+      value: "ravindra-be2004"
+    - name: GIT_EMAIL
+      value: "ravindra.be2004@gmail.com"
+    - name: COMMIT_MSG
+      value: "Trivy report for $(params.image-name)"
+    workspaces:
+    - name: source
+      workspace: shared-workspace
+
+          

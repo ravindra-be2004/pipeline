@@ -1,0 +1,166 @@
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: git-sonarqube-pipeline
+spec:
+  params:
+  - name: commit-message
+    type: string
+    description: git commit message for trivy scan report
+  - name: image-name
+    type: string
+  - name: git-url
+    type: string
+  - name: git-revision
+    type: string
+    default: main
+  - name: SONAR_HOST_URL
+    type: string
+  - name: PROJECT_KEY
+    type: string
+  workspaces:
+  - name: shared-workspace
+  tasks:
+  - name: clone-repo
+    taskRef:
+      name: git-clone
+      kind: ClusterTask
+    workspaces:
+    - name: output
+      workspace: shared-workspace
+    params:
+      - name: url
+        value: $(params.git-url)
+      - name: revision
+        value: $(params.git-revision)
+      - name: deleteExisting
+        value: "true" 
+
+  - name: sonar-analysis
+    taskRef:
+      name: sonarqube-scanner
+    runAfter:
+      #      - clone-repo
+      - deploy-app 
+    workspaces:
+    - name: source
+      workspace: shared-workspace
+    params:
+      - name: SONAR_HOST_URL
+        value: $(params.SONAR_HOST_URL)
+      - name: PROJECT_KEY
+        value: $(params.PROJECT_KEY)
+
+  - name: build-php-image
+    taskRef:
+      name: s2i-build-php
+    runAfter:
+    - oc-deploy
+    workspaces:
+    - name: source
+      workspace: shared-workspace
+    params:
+    - name: IMAGE
+      value: $(params.image-name)
+
+  - name: s2i-php
+    params:
+    - name: VERSION
+      value: latest
+    - name: PATH_CONTEXT
+      value: .
+    - name: TLSVERIFY
+      value: 'true'
+    - name: IMAGE
+      value: $(params.image-name)
+      #    value: 'quay.io/ravindra_be2004/web11'
+    - name: BUILDER_IMAGE
+      value: >-
+        registry.redhat.io/rhel9/buildah@sha256:6886997da8c92214e99e3e8da47a0f08239172d2544b4edae058d5cb018effab
+    - name: SKIP_PUSH
+      value: 'false'
+    - name: ENV_VARS
+      value: []
+    runAfter:
+      #    - sonar-analysis 
+    - deploy-app 
+    taskRef:
+      kind: ClusterTask
+      name: s2i-php
+    workspaces:
+    - name: source
+      workspace: shared-workspace
+
+  - name: trivy-scan
+    taskRef:
+      name: trivy-image-scan
+        #runAfter: [s2i-php]
+    runAfter: [deploy-app]
+    params:
+    - name: IMAGE
+      value: $(params.image-name)
+    workspaces:
+    - name: output
+      workspace: shared-workspace  
+        
+  - name: deploy-app
+    #    runAfter: [commit-and-push]
+    runAfter: [build-php-image]
+    params:
+    - name: image-name
+      value: $(params.image-name)
+    taskRef:
+      name: kubectl-deploy
+    workspaces:
+      - name: source
+        workspace: shared-workspace
+
+  - name: copy-report
+    taskRef:
+      name: copy-report
+    runAfter:
+      #    - trivy-scan
+    - deploy-app
+    workspaces:
+    - name: source
+      workspace: shared-workspace    
+
+  - name: oc-deploy
+    runAfter:
+    - "clone-repo"
+    taskRef:
+      name: openshift-client
+    workspaces:
+    - name: manifest-dir
+      workspace: shared-workspace
+    params:
+    - name: SCRIPT
+      value: >-
+        oc new-build registry.redhat.io/rhel8/php-82@sha256:d44e06819c26014b91d48bf432011af4d3beb2b9b2167f43c0041171bbc4643b~https://github.com/ravindra-be2004/testrep --name web12 --to-docker=quay.io/ravindra_be2004/web12:latest
+        #        oc create deploy mydemo --image quay.io/ravindra_be2004/web11:latest
+
+  - name: commit-and-push
+    runAfter:
+      #    - copy-report 
+    - deploy-app 
+    taskRef:
+      name: git-cli
+      kind: ClusterTask
+    params:
+      - name: GIT_USER_NAME
+        value: "ravindra-be2004"
+      - name: GIT_USER_EMAIL
+        value: "ravindra.be2004@gmail.com"
+      - name: GIT_SCRIPT
+        value: |   
+          # echo "This is a test file from Tekton11" > tekton-demo11.txt
+          #          git clone https://github.com/ravindra-be2004/scanreport
+          git config --global --add safe.directory $(pwd)
+          git checkout -b $(params.git-revision)
+          #ls $(workspaces.source.path)
+          git add .
+          git commit -m "$(params.commit-message)" || echo "No changes to commit"
+          git push -u origin $(params.git-revision)
+    workspaces:
+      - name: source
+        workspace: shared-workspace      

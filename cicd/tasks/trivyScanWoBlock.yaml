@@ -17,12 +17,13 @@ spec:
   - name: output
   steps:
   - name: scan
-    image: aquasec/trivy:latest
+    image: docker.io/aquasec/trivy@sha256:dea76d4b50c75125cada676a87ac23de2b7ba4374752c6f908253c3b839201d9 #aquasec/trivy:latest
     workingDir: $(workspaces.output.path)
     script: |
       #!/bin/sh
       echo " Running Trivy scan on: $(params.IMAGE)"
-      trivy image --severity $(params.SEVERITY) --format table --no-progress -o trivy-report.txt $(params.IMAGE)
+      trivy image --severity $(params.SEVERITY) \
+       --format table --no-progress -o trivy-report.txt $(params.IMAGE)
       echo "--- Trivy scan completed ---"
       echo "Scan report stored in workspace output."
       #cp trivy-report.txt $(results.scan-summary.path)

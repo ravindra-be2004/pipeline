@@ -7,8 +7,6 @@ spec:
   pipelineRef:
     name: git-sonarqube-pipeline
   params:
-    #  - name: GIT_REPO_URL
-    #    value: https://github.com/ravindra-be2004/pipeline
   - name: commit-message
     value: "Trivy report for image"
   - name: GIT_USER_EMAIL
@@ -16,19 +14,16 @@ spec:
   - name: GIT_USER_NAME  
     value: ravindra-be2004
   - name: image-name
-    value: quay.io/ravindra_be2004/web12:latest
+    value: quay.io/ravindra_be2004/web11:latest
   - name: git-url
     value: https://github.com/ravindra-be2004/testrep.git
   - name: git-revision
     value: main
   - name: SONAR_HOST_URL
-    #    value: http://127.0.0.1:9000
-    value: http://sonar1-demo23.apps.ocp4.example.com
+    value: http://sonar1-demo1.apps.ocp4.example.com
   - name: PROJECT_KEY
     value: demo1
   workspaces:
-    #  - name: sonar-settings
-    #    emptyDir: {}
   - name: shared-workspace
     volumeClaimTemplate:
       metadata:
